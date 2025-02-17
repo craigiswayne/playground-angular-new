@@ -4,8 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:dialog-demo": "ng serve --project dialog-demo",
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build": "ng build",
+    "build:dialog-demo": "ng build --project dialog-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
