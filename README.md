@@ -2,7 +2,8 @@
 
 ## New Demos
 ```
-ng generate application dialog-demo --inline-style true --minimal true --routing false --server-routing false --skip-tests true
+app_name="spacebar-listener"
+ng generate application $app_name --inline-style true --minimal true --routing false --server-routing false --skip-tests true
 ```
 
 ---
