@@ -15,6 +15,9 @@
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",
 
+    "start:smoke-effect-demo": "ng serve --project smoke-effect",
+    "build:smoke-effect-demo": "ng build --project smoke-effect",
+
     "start:internationalization-demo": "ng serve --project internationalization-demo",
     "build:internationalization-demo": "ng build --project internationalization-demo --localize",
     "extract:languages": "ng extract-i18n --output-path src/locale --project internationalization-demo",

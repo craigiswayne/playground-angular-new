@@ -1,9 +1,9 @@
 # PlaygroundAngular
 
 ## New Demos
-```
-app_name="spacebar-listener"
-ng generate application $app_name --inline-style true --minimal true --routing false --server-routing false --skip-tests true
+```shell
+app_name="smoke-effect"
+ng generate application $app_name --inline-style true --minimal true --routing false --server-routing false --skip-tests true --ssr false
 ```
 
 ---
