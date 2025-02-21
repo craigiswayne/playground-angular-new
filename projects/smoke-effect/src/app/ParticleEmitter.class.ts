@@ -1,5 +1,5 @@
-import {CANVAS_HEIGHT, CANVAS_WIDTH} from './global';
 import {Particle} from './Particle.class';
+import {Globals} from './global';
 
 export class ParticleEmitter {
   // @ts-ignore
@@ -23,8 +23,8 @@ export class ParticleEmitter {
   public init(xScale: number, yScale: number, particles: number, image: HTMLImageElement) {
     // the effect is positioned relative to the width and height of the
     // canvas
-    this.m_x = CANVAS_WIDTH * xScale;
-    this.m_y = CANVAS_HEIGHT * yScale;
+    this.m_x = Globals.CANVAS_WIDTH * xScale;
+    this.m_y = Globals.CANVAS_HEIGHT * yScale;
     this.m_image = image;
     this.m_dieRate = 0.95;
     // start with smoke already in place

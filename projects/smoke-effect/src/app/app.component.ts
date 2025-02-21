@@ -1,10 +1,9 @@
 import {AfterViewInit, Component, ElementRef, viewChild} from '@angular/core';
-import {CANVAS_WIDTH, CANVAS_HEIGHT, Changeables} from './global';
+import {Globals} from './global';
 import { ParticleEmitter } from './ParticleEmitter.class';
 
 @Component({
   selector: 'app-root',
-  imports: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -15,8 +14,6 @@ export class AppComponent implements AfterViewInit {
   private smoke_2 = new ParticleEmitter();
   private smoke_3 = new ParticleEmitter();
 
-  // private count = 0;
-
   private lastRender = new Date().getTime();
 
   ngAfterViewInit() {
@@ -26,8 +23,8 @@ export class AppComponent implements AfterViewInit {
   private init(): void {
     const canvas = this.canvas_ref()?.nativeElement!;
     this.context = canvas.getContext('2d')!;
-    canvas.width = CANVAS_WIDTH;
-    canvas.height = CANVAS_HEIGHT;
+    canvas.width = Globals.CANVAS_WIDTH;
+    canvas.height = Globals.CANVAS_HEIGHT;
 
     const img_smoke_1 = new Image(),
       img_smoke_2 = new Image(),
@@ -52,14 +49,13 @@ export class AppComponent implements AfterViewInit {
   }
 
   private render(): void {
-    // time in milliseconds
     const timeElapsed = new Date().getTime() - this.lastRender;
     this.lastRender = new Date().getTime();
-    this.context.clearRect(Changeables.dirtyLeft, Changeables.dirtyTop, Changeables.dirtyRight - Changeables.dirtyLeft, Changeables.dirtyBottom - Changeables.dirtyTop);
-    Changeables.dirtyLeft = 1000;
-    Changeables.dirtyTop = 1000;
-    Changeables.dirtyRight = 0;
-    Changeables.dirtyBottom = 0;
+    this.context.clearRect(Globals.dirtyLeft, Globals.dirtyTop, Globals.dirtyRight - Globals.dirtyLeft, Globals.dirtyBottom - Globals.dirtyTop);
+    Globals.dirtyLeft = 1000;
+    Globals.dirtyTop = 1000;
+    Globals.dirtyRight = 0;
+    Globals.dirtyBottom = 0;
 
     this.smoke_1.update(timeElapsed);
     this.smoke_1.render(this.context);
@@ -70,12 +66,12 @@ export class AppComponent implements AfterViewInit {
     this.smoke_3.update(timeElapsed);
     this.smoke_3.render(this.context);
 
-    Changeables.windVelocity += (Math.random() - 0.5) * 0.002;
-    if (Changeables.windVelocity > 0.015) {
-      Changeables.windVelocity = 0.015;
+    Globals.windVelocity += (Math.random() - 0.5) * 0.002;
+    if (Globals.windVelocity > 0.015) {
+      Globals.windVelocity = 0.015;
     }
-    if (Changeables.windVelocity < 0.0) {
-      Changeables.windVelocity = 0.0;
+    if (Globals.windVelocity < 0.0) {
+      Globals.windVelocity = 0.0;
     }
     requestAnimationFrame(this.render.bind(this))
   }

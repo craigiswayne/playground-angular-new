@@ -1,10 +1,9 @@
-export const CANVAS_WIDTH = 500;
-export const CANVAS_HEIGHT = 400;
-
-export const Changeables = {
+export const Globals = {
+  CANVAS_WIDTH: 600,
+  CANVAS_HEIGHT: 600,
   windVelocity: 0.01,
   dirtyLeft: 0,
-  dirtyRight: CANVAS_WIDTH,
+  dirtyRight: 600,
   dirtyTop: 0,
-  dirtyBottom: CANVAS_HEIGHT
+  dirtyBottom: 600
 }

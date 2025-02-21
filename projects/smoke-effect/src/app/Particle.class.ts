@@ -1,5 +1,5 @@
 import {ParticleEmitter} from './ParticleEmitter.class';
-import {Changeables} from './global';
+import {Globals} from './global';
 
 export class Particle {
   // @ts-ignore
@@ -51,7 +51,7 @@ export class Particle {
     // the initial age may be > 0. This is so there is already a smoke trail
     // in
     // place at the start
-    this.m_x += (this.m_xVector + Changeables.windVelocity) * this.m_age;
+    this.m_x += (this.m_xVector + Globals.windVelocity) * this.m_age;
     this.m_y += this.m_yVector * this.m_age;
     this.m_scale = 0.01;
     this.m_alpha = 0.0;
@@ -89,7 +89,7 @@ export class Particle {
       this.m_y += this.m_yVector * timeElapsed;
     }
     // the x direction is influenced by wind velocity
-    this.m_x += (this.m_xVector + Changeables.windVelocity) * timeElapsed;
+    this.m_x += (this.m_xVector + Globals.windVelocity) * timeElapsed;
     this.m_alpha *= this.m_emitter.m_alpha;
     this.m_scale = 0.001 + startScale + this.m_age / 4000.0;
   }
@@ -105,17 +105,17 @@ export class Particle {
     const x = Math.round(this.m_x - width / 2);
     const y = Math.round(this.m_y + height / 2);
     ctx.drawImage(this.m_emitter.m_image, x, y, width, height);
-    if (x < Changeables.dirtyLeft) {
-      Changeables.dirtyLeft = x;
+    if (x < Globals.dirtyLeft) {
+      Globals.dirtyLeft = x;
     }
-    if (x + width > Changeables.dirtyRight) {
-      Changeables.dirtyRight = x + width;
+    if (x + width > Globals.dirtyRight) {
+      Globals.dirtyRight = x + width;
     }
-    if (y < Changeables.dirtyTop) {
-      Changeables.dirtyTop = y;
+    if (y < Globals.dirtyTop) {
+      Globals.dirtyTop = y;
     }
-    if (y + height > Changeables.dirtyBottom) {
-      Changeables.dirtyBottom = y + height;
+    if (y + height > Globals.dirtyBottom) {
+      Globals.dirtyBottom = y + height;
     }
   }
 };
