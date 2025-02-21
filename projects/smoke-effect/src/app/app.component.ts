@@ -33,9 +33,9 @@ export class AppComponent implements AfterViewInit {
       img_smoke_2 = new Image(),
       img_smoke_3 = new Image();
 
-    img_smoke_1.src = 'https://assets.codepen.io/1202/smoke_1.png';
-    img_smoke_2.src = 'https://assets.codepen.io/1202/smoke_2.png';
-    img_smoke_3.src = 'https://assets.codepen.io/1202/smoke_3.png';
+    img_smoke_1.src = '/smoke_1.webp';
+    img_smoke_2.src = '/smoke_2.webp';
+    img_smoke_3.src = '/smoke_3.webp';
 
     this.smoke_1.m_alpha = 0.2;
     this.smoke_1.m_speed = 0.001;
@@ -48,8 +48,7 @@ export class AppComponent implements AfterViewInit {
     this.smoke_3.m_speed = 0.02;
     this.smoke_3.init(.222, .553, 90, img_smoke_3);
 
-    // this.requestAnimFrame(this.render);
-    this.render()
+    requestAnimationFrame(this.render.bind(this))
   }
 
   private render(): void {
@@ -78,11 +77,6 @@ export class AppComponent implements AfterViewInit {
     if (Changeables.windVelocity < 0.0) {
       Changeables.windVelocity = 0.0;
     }
-
-    // this.requestAnimFrame(this.render);
-  }
-
-  private requestAnimFrame(callback: Function): Function {
-    return callback();
+    requestAnimationFrame(this.render.bind(this))
   }
 }
