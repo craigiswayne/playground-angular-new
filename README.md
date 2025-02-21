@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="intercept-add-auth-token"
+app_name="smoke-effect-three-js"
 ng generate application "$app_name-demo" --inline-style true --minimal true --routing false --server-routing false --skip-tests true --ssr false
 ```
 

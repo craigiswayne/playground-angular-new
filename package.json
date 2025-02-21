@@ -5,23 +5,22 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-
     "start:dialog-demo": "ng serve --project dialog-demo",
     "build:dialog-demo": "ng build --project dialog-demo",
-
     "start:spacebar-listener": "ng serve --project spacebar-listener",
     "build:spacebar-listener": "ng build --project spacebar-listener",
-
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",
 
+    "start:smoke-effect-three-js-demo": "ng serve --project smoke-effect-three-js-demo",
+    "build:smoke-effect-three-js-demo": "ng build --project smoke-effect-three-js-demo",
+    "start:static-smoke-effect-three-js-demo": "npx serve public/static/smoke-effect-three-js-demo",
+
     "start:smoke-effect-vanilla-js-demo": "ng serve --project smoke-effect-vanilla-js-demo",
     "build:smoke-effect-vanilla-js-demo": "ng build --project smoke-effect-vanilla-js-demo",
-
     "start:internationalization-demo": "ng serve --project internationalization-demo",
     "build:internationalization-demo": "ng build --project internationalization-demo --localize",
     "extract:languages": "ng extract-i18n --output-path src/locale --project internationalization-demo",
-
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -35,7 +34,9 @@
     "@angular/platform-browser": "^19.1.0",
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
+    "@types/three": "^0.173.0",
     "rxjs": "~7.8.0",
+    "three": "^0.173.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
