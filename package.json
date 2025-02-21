@@ -15,8 +15,8 @@
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",
 
-    "start:smoke-effect-demo": "ng serve --project smoke-effect",
-    "build:smoke-effect-demo": "ng build --project smoke-effect",
+    "start:smoke-effect-vanilla-js-demo": "ng serve --project smoke-effect-vanilla-js-demo",
+    "build:smoke-effect-vanilla-js-demo": "ng build --project smoke-effect-vanilla-js-demo",
 
     "start:internationalization-demo": "ng serve --project internationalization-demo",
     "build:internationalization-demo": "ng build --project internationalization-demo --localize",

@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="smoke-effect"
+app_name="smoke-effect-vanilla-js-demo"
 ng generate application $app_name --inline-style true --minimal true --routing false --server-routing false --skip-tests true --ssr false
 ```
 

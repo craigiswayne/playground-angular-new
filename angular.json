@@ -501,7 +501,7 @@
         }
       }
     },
-    "smoke-effect": {
+    "smoke-effect-vanilla-js-demo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -531,28 +531,28 @@
           "skipTests": true
         }
       },
-      "root": "projects/smoke-effect",
-      "sourceRoot": "projects/smoke-effect/src",
+      "root": "projects/smoke-effect-vanilla-js-demo",
+      "sourceRoot": "projects/smoke-effect-vanilla-js-demo/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/smoke-effect",
-            "index": "projects/smoke-effect/src/index.html",
-            "browser": "projects/smoke-effect/src/main.ts",
+            "outputPath": "dist/smoke-effect-vanilla-js-demo",
+            "index": "projects/smoke-effect-vanilla-js-demo/src/index.html",
+            "browser": "projects/smoke-effect-vanilla-js-demo/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/smoke-effect/tsconfig.app.json",
+            "tsConfig": "projects/smoke-effect-vanilla-js-demo/tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/smoke-effect/public"
+                "input": "projects/smoke-effect-vanilla-js-demo/public"
               }
             ],
             "styles": [
-              "projects/smoke-effect/src/styles.css"
+              "projects/smoke-effect-vanilla-js-demo/src/styles.css"
             ],
             "scripts": []
           },
@@ -584,10 +584,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "smoke-effect:build:production"
+              "buildTarget": "smoke-effect-vanilla-js-demo:build:production"
             },
             "development": {
-              "buildTarget": "smoke-effect:build:development"
+              "buildTarget": "smoke-effect-vanilla-js-demo:build:development"
             }
           },
           "defaultConfiguration": "development"
