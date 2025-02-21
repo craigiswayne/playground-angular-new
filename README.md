@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="smoke-effect-three-js"
+app_name="smoke-effect-three-js-2"
 ng generate application "$app_name-demo" --inline-style true --minimal true --routing false --server-routing false --skip-tests true --ssr false
 ```
 
@@ -34,5 +34,3 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-
-

@@ -12,9 +12,12 @@
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",
 
-    "start:smoke-effect-three-js-demo": "ng serve --project smoke-effect-three-js-demo",
+    "start:smoke-effect-three-js-demo": "ng serve --project smoke-effect-three-js-demo --port 4210",
     "build:smoke-effect-three-js-demo": "ng build --project smoke-effect-three-js-demo",
     "start:static-smoke-effect-three-js-demo": "npx serve public/static/smoke-effect-three-js-demo",
+
+    "start:smoke-effect-three-js-2-demo": "ng serve --project smoke-effect-three-js-2-demo --port 4211",
+    "build:smoke-effect-three-js-2-demo": "ng build --project smoke-effect-three-js-2-demo",
 
     "start:smoke-effect-vanilla-js-demo": "ng serve --project smoke-effect-vanilla-js-demo",
     "build:smoke-effect-vanilla-js-demo": "ng build --project smoke-effect-vanilla-js-demo",
