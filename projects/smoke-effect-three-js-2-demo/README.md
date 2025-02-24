@@ -1,9 +1,7 @@
-# Smoke Effect with Three JS
+# Smoke Effect with Three JS (2)
 
-Dynamically adds the canvas item to a container
+Same as `smoke-effect-three-js-demo` but
 
-https://github.com/JohnnyDevNull/ng-three-template/blob/master/package.json
+Makes use of an existing Canvas Element
 
-```
-npm i @types/three
-```
+See README.md in `smoke-effect-three-js-demo`
