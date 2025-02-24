@@ -1,6 +1,10 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {Component, ElementRef, HostBinding, HostListener, OnDestroy, OnInit, viewChild} from '@angular/core';
 import * as THREE from 'three';
 import {Clock, PerspectiveCamera, Scene, WebGLRenderer} from 'three';
+
+const random_number_in_range = (min: number, max: number): number =>  {
+  return Math.random() * (max - min) + min;
+}
 
 @Component({
   selector: 'app-root',
@@ -22,6 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.camera.position.z = 1000;
     this.scene.fog = new THREE.FogExp2(0xc0f0ff, 0.0015);
   }
+
+  @HostBinding('class.no-images') no_images = false;
 
   @HostListener('window:resize') on_window_resize() {
     this.resize();
@@ -56,26 +62,31 @@ export class AppComponent implements OnInit, OnDestroy {
     const smokeMaterial = new THREE.MeshLambertMaterial({
       map: smoke_texture,
       emissive: 0x222222, // emissive light of material
+      // emissive: 0xffffff, // emissive light of material
       opacity: 0.15, // less will look like less smoke, high inverse
+      // opacity: 0.3, // less will look like less smoke, high inverse
       transparent: true
     });
 
     new Array(90).fill('').forEach(i => {
       let smoke_particle = new THREE.Mesh(smokeGeometry, smokeMaterial);
       smoke_particle.scale.set(2, 2, 2);
-      // smoke_particle.scale.set(1,1,1);
-      smoke_particle.position.set(Math.random() * 1000 - 500, Math.random() * 1000 - 500, Math.random() * 1000 - 100);
+      const x = random_number_in_range((window.innerWidth/2)*-1, window.innerWidth/2)
+      const y = random_number_in_range((window.innerHeight/2)*-1, -200)
+      const z = Math.random() * 1000 - 100
+      console.log('Coordinates', x, y, z)
+      smoke_particle.position.set(x, y, z);
       smoke_particle.rotation.z = Math.random() * 360;
 
       this.scene.add(smoke_particle);
       this.smoke_particles.push(smoke_particle);
     })
 
+    this.renderer.setAnimationLoop(this.animate.bind(this));
     this.animate();
   }
 
   private animate() {
-    this.frameId = requestAnimationFrame(this.animate.bind(this));
     this.delta = this.clock.getDelta();
     this.renderer!.render(this.scene, this.camera);
 
@@ -99,5 +110,9 @@ export class AppComponent implements OnInit, OnDestroy {
       // this.renderer = null;
       // this.canvas = null;
     }
+  }
+
+  public set_image_opacity(value: number|string){
+    console.log(value)
   }
 }

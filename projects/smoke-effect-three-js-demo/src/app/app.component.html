@@ -1,4 +1,8 @@
-<!--<img loading="lazy" [attr.src]="'https://localhost:4202/arena-background-landscape.png'" alt="landscape"/>-->
+<img loading="lazy" [attr.src]="'https://localhost:4202/arena-background-landscape.png'" alt="landscape"/>
 <canvas #canvas></canvas>
+<img src="https://localhost:4202/arena-background-podium.png" />
 <button (click)="stop_effects()">Stop effects</button>
-<!--<img src="https://localhost:4202/arena-background-podium.png" />-->
+<div>
+  <input type="range" min=0 max=1 step="0.1" #opacity_range (change)="set_image_opacity(opacity_range.value)"/>
+</div>
+<button (click)="no_images = !no_images">Toggle Images</button>
