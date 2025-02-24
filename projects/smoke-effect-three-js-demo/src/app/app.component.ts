@@ -4,9 +4,7 @@ import {Clock, PerspectiveCamera, Scene, WebGLRenderer} from 'three';
 
 @Component({
   selector: 'app-root',
-  imports: [],
-  templateUrl: './app.component.html',
-  styles: [],
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements AfterViewInit {
 
