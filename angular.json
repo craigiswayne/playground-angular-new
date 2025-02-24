@@ -814,7 +814,7 @@
         }
       }
     },
-    "smoke-effect-three-js-2-demo": {
+    "rotating-cube-three-js-demo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -844,28 +844,28 @@
           "skipTests": true
         }
       },
-      "root": "projects/smoke-effect-three-js-2-demo",
-      "sourceRoot": "projects/smoke-effect-three-js-2-demo/src",
+      "root": "projects/rotating-cube-three-js-demo",
+      "sourceRoot": "projects/rotating-cube-three-js-demo/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/smoke-effect-three-js-2-demo",
-            "index": "projects/smoke-effect-three-js-2-demo/src/index.html",
-            "browser": "projects/smoke-effect-three-js-2-demo/src/main.ts",
+            "outputPath": "dist/rotating-cube-three-js-demo",
+            "index": "projects/rotating-cube-three-js-demo/src/index.html",
+            "browser": "projects/rotating-cube-three-js-demo/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/smoke-effect-three-js-2-demo/tsconfig.app.json",
+            "tsConfig": "projects/rotating-cube-three-js-demo/tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/smoke-effect-three-js-2-demo/public"
+                "input": "projects/rotating-cube-three-js-demo/public"
               }
             ],
             "styles": [
-              "projects/smoke-effect-three-js-2-demo/src/styles.css"
+              "projects/rotating-cube-three-js-demo/src/styles.css"
             ],
             "scripts": []
           },
@@ -897,10 +897,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "smoke-effect-three-js-2-demo:build:production"
+              "buildTarget": "rotating-cube-three-js-demo:build:production"
             },
             "development": {
-              "buildTarget": "smoke-effect-three-js-2-demo:build:development"
+              "buildTarget": "rotating-cube-three-js-demo:build:development"
             }
           },
           "defaultConfiguration": "development"
