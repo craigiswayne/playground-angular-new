@@ -1,6 +1,6 @@
-<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'http://sales-demo.uroc.com/AztecRush/game-AztecRush/assets/pixi_animate/rg196.webp?v=1.0.23'" alt="landscape"/>
+<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'/arena-background-landscape.png'" alt="landscape"/>
 <canvas #canvas></canvas>
-<img src="/arena-background-podium.png" alt="podium" [style.opacity]="demoForm.value.opacity_image"/>
+<img  [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.opacity_image"/>
 <form [formGroup]="demoForm">
   <label>Image Opacity ({{demoForm.value.opacity_image}})</label>
   <input type="range" min=0 max=1 step="0.05" formControlName="opacity_image"/>
