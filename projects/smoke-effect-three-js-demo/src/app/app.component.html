@@ -1,11 +1,31 @@
-<img loading="lazy" [attr.src]="'https://localhost:4202/arena-background-landscape.png'" alt="landscape"/>
+<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'http://sales-demo.uroc.com/AztecRush/game-AztecRush/assets/pixi_animate/rg196.webp?v=1.0.23'" alt="landscape"/>
 <canvas #canvas></canvas>
-<img src="https://localhost:4202/arena-background-podium.png" />
-<button (click)="stop_effects()">Stop effects</button>
-<div>
-</div>
-<button (click)="no_images = !no_images">Toggle Images</button>
+<img src="/arena-background-podium.png" alt="podium" [style.opacity]="demoForm.value.opacity_image"/>
 <form [formGroup]="demoForm">
-  <label>Opacity ({{demoForm.value.opacity}})</label>
+  <label>Image Opacity ({{demoForm.value.opacity_image}})</label>
+  <input type="range" min=0 max=1 step="0.05" formControlName="opacity_image"/>
+
+  <label>Smoke Image ({{demoForm.value.texture}})</label>
+  <select formControlName="texture">
+    <option value="smoke.png">smoke.png</option>
+    <option value="fog-particle.png">fog-particle.png</option>
+  </select>
+
+  <label>Smoke Opacity ({{demoForm.value.opacity}})</label>
   <input type="range" min=0 max=1 step="0.05" formControlName="opacity"/>
+
+  <label>Emissive ({{demoForm.value.emissive}})</label>
+  <input type="color"  formControlName="emissive"/>
+
+  <label>Rotation Speed ({{demoForm.value.rotation_speed}})</label>
+  <input type="range" [min]="0.01" [max]="5" [step]="0.02" formControlName="rotation_speed"/>
+
+  <label>Presets</label>
+  <select formControlName="preset">
+    <option value="">Original</option>
+    <option value="preset_1">Preset 1</option>
+  </select>
+
+  <button (click)="no_images = !no_images">Toggle Images</button>
+  <button (click)="stop_effects()">Stop effects</button>
 </form>

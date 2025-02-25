@@ -8,6 +8,14 @@ const random_number_in_range = (min: number, max: number): number =>  {
   return Math.random() * (max - min) + min;
 }
 
+const presets: { [key: string]: {opacity: number, emissive: string, rotation_speed: number}} = {
+  'preset_1': {
+    opacity: 0.25,
+    emissive: '#5a7ce2',
+    rotation_speed: 1.01
+  }
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -31,17 +39,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private readonly formBuilder = inject(FormBuilder);
   public demoForm = this.formBuilder.group({
-    opacity: [0.15, Validators.required]
+    emissive: ['#222222', Validators.required],
+    texture: ['smoke.png', Validators.required],
+    opacity_image: [1, Validators.required],
+    opacity: [0.15, Validators.required],
+    rotation_speed: [0.12, Validators.required],
+    preset: ['', Validators.required]
   });
 
   constructor() {
     this.camera.position.z = 1000;
     this.scene.fog = new THREE.FogExp2(0xc0f0ff, 0.0015);
-    this.demoForm.valueChanges.pipe(
-      tap(changes => {
-        console.log('changes', changes);
-      })
-    ).subscribe();
+    this.demoForm.valueChanges
+      .pipe(
+        tap(value => {
+          if(value.texture !== undefined && value.texture !== null){
+            this.smoke_texture = new THREE.TextureLoader().load(value.texture);
+          }
+          if(value.preset !== undefined && value.preset !== null ){
+            this.demoForm.patchValue(presets[value.preset], {emitEvent: false})
+          }
+        })
+      )
+      .subscribe();
   }
 
   @HostBinding('class.no-images') no_images = false;
@@ -88,11 +108,9 @@ export class AppComponent implements OnInit, OnDestroy {
     const light = new THREE.HemisphereLight(0xd6e6ff, 0xa38c08, 1);
     this.scene.add(light);
 
-    this.smoke_texture = new THREE.TextureLoader().load("smoke.png");
+    this.smoke_texture = new THREE.TextureLoader().load('smoke.png');
     // smokeTexture.encoding = THREE.sRGBEncoding;
     const smoke_size = new THREE.PlaneGeometry(300, 300);
-
-    // MeshLambert good for non-shiny materials
     const smoke_material = this.generate_material();
 
     new Array(90).fill('').forEach(i => {
@@ -114,10 +132,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private generate_material() {
     return new THREE.MeshLambertMaterial({
       map: this.smoke_texture,
-      emissive: 0x222222, // emissive light of material
-      // emissive: 0xffffff, // emissive light of material
-      opacity: this.demoForm.value.opacity!, // less will look like less smoke, high inverse
-      // opacity: 0.3, // less will look like less smoke, high inverse
+      emissive: new THREE.Color(this.demoForm.value.emissive!),
+      opacity: this.demoForm.value.opacity!,
       transparent: true
     });
   }
@@ -127,7 +143,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.renderer!.render(this.scene, this.camera);
 
     this.smoke_particles.forEach(particle => {
-      particle.rotation.z += (this.delta * 0.12);
+      particle.rotation.z += (this.delta * this.demoForm.value.rotation_speed!);
       particle.material = this.generate_material();
     })
   }
