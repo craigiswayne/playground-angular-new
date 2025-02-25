@@ -43,6 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private frameId?: number;
   private texture_loader = new THREE.TextureLoader();
   private smoke_size = new THREE.PlaneGeometry(300, 300);
+  private max_smoke_height = -200;
 
 
   private readonly formBuilder = inject(FormBuilder);
@@ -67,17 +68,15 @@ export class AppComponent implements OnInit, OnDestroy {
           }
 
           const new_particle_count = +this.demoForm.value.particle_count!;
-
           if(new_particle_count > this.smoke_particles.length ){
-            const smoke_particle = this.generate_particle(this.smoke_size, this.generate_material());
-            this.scene.add(smoke_particle);
-            this.smoke_particles.push(smoke_particle);
+            this.add_smoke_particles(new_particle_count - this.smoke_particles.length);
           } else if (new_particle_count < this.smoke_particles.length) {
             const difference = this.smoke_particles.length - new_particle_count;
             this.smoke_particles.splice(-1*difference).forEach((item, index) => {
               this.scene.remove(item);
             })
           }
+
         })
       )
       .subscribe();
@@ -134,15 +133,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.scene.add(light);
 
     this.smoke_texture = this.texture_loader.load('smoke.png');
-    const smoke_material = this.generate_material();
+    this.add_smoke_particles(+this.demoForm.value.particle_count!);
+    this.renderer.setAnimationLoop(this.animate.bind(this));
+  }
 
-    new Array(+this.demoForm.value.particle_count!).fill('').forEach(() => {
+  private add_smoke_particles(count: number) {
+    const smoke_material = this.generate_material();
+    new Array(count).fill('').forEach(() => {
       const smoke_particle = this.generate_particle(this.smoke_size, smoke_material);
       this.scene.add(smoke_particle);
       this.smoke_particles.push(smoke_particle);
     })
-
-    this.renderer.setAnimationLoop(this.animate.bind(this));
   }
 
   private generate_material(): MeshLambertMaterial {
@@ -158,7 +159,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const particle = new THREE.Mesh(size, material);
     particle.scale.set(2, 2, 2);
     const x = random_number_in_range((window.innerWidth/2)*-1, window.innerWidth/2)
-    const y = random_number_in_range((window.innerHeight/2)*-1, -200)
+    const y = random_number_in_range((window.innerHeight/2)*-1, this.max_smoke_height);
     const z = Math.random() * 1000 - 100
     particle.position.set(x, y, z);
     particle.rotation.z = Math.random() * 360;
