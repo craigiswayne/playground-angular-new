@@ -1,10 +1,10 @@
-<!--<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'/arena-background-landscape.png'" alt="landscape"/>-->
-<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'/arena-background-landscape-no-mist.png'" alt="landscape"/>
-<canvas #canvas></canvas>
-<img  [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.opacity_image"/>
+<!--<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/arena-background-landscape.png'" alt="landscape"/>-->
+<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/arena-background-landscape-no-mist.png'" alt="landscape"/>
+<canvas #canvas_ref></canvas>
+<img [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.background_opacity"/>
 <form [formGroup]="demoForm">
-  <label>Image Opacity ({{demoForm.value.opacity_image}})</label>
-  <input type="range" min=0 max=1 step="0.05" formControlName="opacity_image"/>
+  <label>Image Opacity ({{demoForm.value.background_opacity}})</label>
+  <input type="range" min=0 max=1 step="0.05" formControlName="background_opacity"/>
 
   <label>Smoke Image ({{demoForm.value.texture}})</label>
   <select formControlName="texture">
@@ -13,22 +13,32 @@
   </select>
 
   <label>Particles ({{demoForm.value.particle_count}})</label>
-  <input type="range" [min]=0 [max]=360 formControlName="particle_count"/>
+  <input type="range" [min]=0 [max]=600 formControlName="particle_count"/>
+
+  <label>Particle Scale Opacity ({{demoForm.value.particle_scale}})</label>
+  <input type="range" min=0.1 max=5 step="0.1" formControlName="particle_scale"/>
 
   <label>Smoke Opacity ({{demoForm.value.opacity}})</label>
   <input type="range" min=0 max=1 step="0.01" formControlName="opacity"/>
 
   <label>Emissive ({{demoForm.value.emissive}})</label>
-  <input type="color"  formControlName="emissive"/>
+  <input type="color" formControlName="emissive" />
 
   <label>Rotation Speed ({{demoForm.value.rotation_speed}})</label>
   <input type="range" [min]="0.01" [max]="5" [step]="0.02" formControlName="rotation_speed"/>
+
+  <label>Rising Speed ({{demoForm.value.rising_speed}})</label>
+  <input type="range" [min]="1" [max]="100" [step]="1" formControlName="rising_speed"/>
+
+  <label>Fade Out Speed ({{demoForm.value.fade_out_speed}})</label>
+  <input type="range" [min]="0.0001" [max]="1" [step]="0.001" formControlName="fade_out_speed"/>
 
   <label>Presets</label>
   <select formControlName="preset">
     <option value="">Original</option>
     <option value="preset_1">Preset 1</option>
     <option value="preset_2">Preset 2</option>
+    <option value="preset_3">Preset 3</option>
   </select>
 
   <button (click)="no_images = !no_images">Toggle Images</button>
