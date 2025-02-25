@@ -1,14 +1,22 @@
-img:first-of-type {
+img.sky {
   position: fixed;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
 }
+
+//img:first-of-type {
+//  position: fixed;
+//  -webkit-user-select: none;
+//  -moz-user-select: none;
+//  -ms-user-select: none;
+//  user-select: none;
+//  width: 100%;
+//  height: 100%;
+//  object-fit: cover;
+//  z-index: -2;
+//}
 
 canvas {
   position: fixed;
@@ -16,11 +24,11 @@ canvas {
   left: 0;
   height: 100vh;
   width: 100vw;
-  z-index: -1;
+  z-index: 1;
 }
 
 
-img:last-of-type {
+img.podium {
   position: fixed;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -32,7 +40,7 @@ img:last-of-type {
   bottom: -50vh;
   transform: translateX(-50%);
   left: 50%;
-  z-index: 0;
+  z-index: 2;
 }
 
 :host.no-images {
@@ -52,6 +60,8 @@ form {
   outline: 1px dashed white;
   outline-offset: -1px;
   padding: 1rem;
+  position: relative;
+  z-index: 10;
 
   input, select, [formcontrolname] {
     margin-bottom: 1rem;

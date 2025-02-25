@@ -1,7 +1,8 @@
-<!--<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/arena-background-landscape.png'" alt="landscape"/>-->
-<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/arena-background-landscape-no-mist.png'" alt="landscape"/>
+<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'http://sales-demo.uroc.com/AztecRush/game-AztecRush/assets/images/basegameBG.webp?v=1.0.23'" alt="landscape"/>
+<!--<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/arena-background-landscape-no-mist.png'" alt="landscape"/>-->
+<img class="sky" [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/sky.png'" alt="sky" />
 <canvas #canvas_ref></canvas>
-<img [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.background_opacity"/>
+<!--<img class="podium" [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.background_opacity"/>-->
 <form [formGroup]="demoForm">
   <label>Image Opacity ({{demoForm.value.background_opacity}})</label>
   <input type="range" min=0 max=1 step="0.05" formControlName="background_opacity"/>
