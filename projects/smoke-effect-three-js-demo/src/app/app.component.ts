@@ -36,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private smoke_particles: THREE.Mesh[] = [];
   private smoke_texture?: THREE.Texture;
   private frameId?: number;
+  private texture_loader = new THREE.TextureLoader();
 
   private readonly formBuilder = inject(FormBuilder);
   public demoForm = this.formBuilder.group({
@@ -54,7 +55,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(
         tap(value => {
           if(value.texture !== undefined && value.texture !== null){
-            this.smoke_texture = new THREE.TextureLoader().load(value.texture);
+            this.smoke_texture = this.texture_loader.load(value.texture);
           }
           if(value.preset !== undefined && value.preset !== null ){
             this.demoForm.patchValue(presets[value.preset], {emitEvent: false})
@@ -108,7 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const light = new THREE.HemisphereLight(0xd6e6ff, 0xa38c08, 1);
     this.scene.add(light);
 
-    this.smoke_texture = new THREE.TextureLoader().load('smoke.png');
+    this.smoke_texture = this.texture_loader.load('smoke.png');
     // smokeTexture.encoding = THREE.sRGBEncoding;
     const smoke_size = new THREE.PlaneGeometry(300, 300);
     const smoke_material = this.generate_material();

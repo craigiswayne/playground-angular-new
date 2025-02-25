@@ -19,6 +19,10 @@
     "build:smoke-effect-three-js-demo": "ng build --project smoke-effect-three-js-demo",
     "start:static-smoke-effect-three-js-demo": "npx serve public/static/smoke-effect-three-js-demo",
 
+    "start:waterfall-effect-three-js-demo": "ng serve --project waterfall-effect-three-js-demo --port 4210",
+    "build:waterfall-effect-three-js-demo": "ng build --project waterfall-effect-three-js-demo",
+    "start:static-waterfall-effect-three-js-demo": "npx serve public/static/waterfall-effect-three-js-demo",
+
     "start:rotating-cube-three-js-demo": "ng serve --project rotating-cube-three-js-demo --port 4211",
     "build:rotating-cube-three-js-demo": "ng build --project rotating-cube-three-js-demo",
 
