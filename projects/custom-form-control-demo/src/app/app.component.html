@@ -1,0 +1,44 @@
+<h1>Custom Form Control Demo</h1>
+
+<p>Below is a form</p>
+<form [formGroup]="demoForm">
+  <div>
+    <label>First Name</label>
+    <input type="text" formControlName="firstName"/>
+  </div>
+  <div>
+    <label>Last Name</label>
+    <input type="text" formControlName="lastName"/>
+  </div>
+  <div>
+    <label>Gender</label>
+    <app-form-control-gender formControlName="gender"></app-form-control-gender>
+  </div>
+</form>
+
+<table>
+  <thead>
+  <tr>
+    <th>Control Name</th><th>Valid?</th><th>Error</th><th>Value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let item of demoForm.controls | keyvalue">
+    <td>{{item.key}}</td>
+    <td>{{demoForm.controls[item.key].valid ? 'yes' : 'no'}}</td>
+    <td>
+      <ng-container *ngIf="demoForm.controls[item.key].errors as errors">
+        <pre><ng-container *ngFor="let error of errors | keyvalue">{{error.key}}: {{error.value}}<br/></ng-container></pre>
+      </ng-container>
+    </td>
+    <td>{{demoForm.controls[item.key].value}}</td>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  References:
+  <ul>
+    <li>https://blog.angular-university.io/angular-custom-form-controls/</li>
+  </ul>
+</div>

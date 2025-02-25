@@ -3,6 +3,9 @@
 <img src="https://localhost:4202/arena-background-podium.png" />
 <button (click)="stop_effects()">Stop effects</button>
 <div>
-  <input type="range" min=0 max=1 step="0.1" #opacity_range (change)="set_image_opacity(opacity_range.value)"/>
 </div>
 <button (click)="no_images = !no_images">Toggle Images</button>
+<form [formGroup]="demoForm">
+  <label>Opacity ({{demoForm.value.opacity}})</label>
+  <input type="range" min=0 max=1 step="0.05" formControlName="opacity"/>
+</form>

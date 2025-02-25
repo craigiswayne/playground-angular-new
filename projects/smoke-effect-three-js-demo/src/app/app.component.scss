@@ -44,3 +44,12 @@ img:last-of-type {
     opacity: 0;
   }
 }
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  color: white;
+  font-family: sans-serif;
+}

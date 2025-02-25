@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="smoke-effect-three-js-2"
+app_name="custom-form-control"
 ng generate application "$app_name-demo" --inline-style true --minimal true --routing false --server-routing false --skip-tests true --ssr false
 ```
 
