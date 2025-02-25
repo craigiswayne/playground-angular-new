@@ -1,4 +1,5 @@
-<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'/arena-background-landscape.png'" alt="landscape"/>
+<!--<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'/arena-background-landscape.png'" alt="landscape"/>-->
+<img [style.opacity]="demoForm.value.opacity_image" loading="lazy" [attr.src]="'/arena-background-landscape-no-mist.png'" alt="landscape"/>
 <canvas #canvas></canvas>
 <img  [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.opacity_image"/>
 <form [formGroup]="demoForm">
@@ -11,8 +12,11 @@
     <option value="fog-particle.png">fog-particle.png</option>
   </select>
 
+  <label>Particles ({{demoForm.value.particle_count}})</label>
+  <input type="range" [min]=0 [max]=360 formControlName="particle_count"/>
+
   <label>Smoke Opacity ({{demoForm.value.opacity}})</label>
-  <input type="range" min=0 max=1 step="0.05" formControlName="opacity"/>
+  <input type="range" min=0 max=1 step="0.01" formControlName="opacity"/>
 
   <label>Emissive ({{demoForm.value.emissive}})</label>
   <input type="color"  formControlName="emissive"/>
@@ -24,6 +28,7 @@
   <select formControlName="preset">
     <option value="">Original</option>
     <option value="preset_1">Preset 1</option>
+    <option value="preset_2">Preset 2</option>
   </select>
 
   <button (click)="no_images = !no_images">Toggle Images</button>

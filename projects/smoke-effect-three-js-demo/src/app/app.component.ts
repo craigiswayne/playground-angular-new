@@ -1,6 +1,6 @@
 import {Component, ElementRef, HostBinding, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
 import * as THREE from 'three';
-import {Clock, PerspectiveCamera, Scene, WebGLRenderer} from 'three';
+import {Clock, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, WebGLRenderer, PlaneGeometry} from 'three';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {tap} from 'rxjs';
 
@@ -11,6 +11,11 @@ const random_number_in_range = (min: number, max: number): number =>  {
 const presets: { [key: string]: {opacity: number, emissive: string, rotation_speed: number}} = {
   'preset_1': {
     opacity: 0.25,
+    emissive: '#5a7ce2',
+    rotation_speed: 1.01
+  },
+  'preset_2': {
+    opacity: 0.46,
     emissive: '#5a7ce2',
     rotation_speed: 1.01
   }
@@ -37,13 +42,16 @@ export class AppComponent implements OnInit, OnDestroy {
   private smoke_texture?: THREE.Texture;
   private frameId?: number;
   private texture_loader = new THREE.TextureLoader();
+  private smoke_size = new THREE.PlaneGeometry(300, 300);
+
 
   private readonly formBuilder = inject(FormBuilder);
   public demoForm = this.formBuilder.group({
-    emissive: ['#222222', Validators.required],
-    texture: ['smoke.png', Validators.required],
     opacity_image: [1, Validators.required],
+    texture: ['smoke.png', Validators.required],
+    particle_count: [90, Validators.required],
     opacity: [0.15, Validators.required],
+    emissive: ['#222222', Validators.required],
     rotation_speed: [0.12, Validators.required],
     preset: ['', Validators.required]
   });
@@ -57,12 +65,28 @@ export class AppComponent implements OnInit, OnDestroy {
           if(value.texture !== undefined && value.texture !== null){
             this.smoke_texture = this.texture_loader.load(value.texture);
           }
-          if(value.preset !== undefined && value.preset !== null ){
-            this.demoForm.patchValue(presets[value.preset], {emitEvent: false})
+
+          const new_particle_count = +this.demoForm.value.particle_count!;
+
+          if(new_particle_count > this.smoke_particles.length ){
+            const smoke_particle = this.generate_particle(this.smoke_size, this.generate_material());
+            this.scene.add(smoke_particle);
+            this.smoke_particles.push(smoke_particle);
+          } else if (new_particle_count < this.smoke_particles.length) {
+            const difference = this.smoke_particles.length - new_particle_count;
+            this.smoke_particles.splice(-1*difference).forEach((item, index) => {
+              this.scene.remove(item);
+            })
           }
         })
       )
       .subscribe();
+
+    this.demoForm.controls.preset.valueChanges.subscribe(value => {
+      if(value !== undefined && value !== null){
+        this.demoForm.patchValue(presets[value], {emitEvent: false})
+      }
+    })
   }
 
   @HostBinding('class.no-images') no_images = false;
@@ -110,19 +134,10 @@ export class AppComponent implements OnInit, OnDestroy {
     this.scene.add(light);
 
     this.smoke_texture = this.texture_loader.load('smoke.png');
-    // smokeTexture.encoding = THREE.sRGBEncoding;
-    const smoke_size = new THREE.PlaneGeometry(300, 300);
     const smoke_material = this.generate_material();
 
-    new Array(90).fill('').forEach(i => {
-      let smoke_particle = new THREE.Mesh(smoke_size, smoke_material);
-      smoke_particle.scale.set(2, 2, 2);
-      const x = random_number_in_range((window.innerWidth/2)*-1, window.innerWidth/2)
-      const y = random_number_in_range((window.innerHeight/2)*-1, -200)
-      const z = Math.random() * 1000 - 100
-      smoke_particle.position.set(x, y, z);
-      smoke_particle.rotation.z = Math.random() * 360;
-
+    new Array(+this.demoForm.value.particle_count!).fill('').forEach(() => {
+      const smoke_particle = this.generate_particle(this.smoke_size, smoke_material);
       this.scene.add(smoke_particle);
       this.smoke_particles.push(smoke_particle);
     })
@@ -130,13 +145,24 @@ export class AppComponent implements OnInit, OnDestroy {
     this.renderer.setAnimationLoop(this.animate.bind(this));
   }
 
-  private generate_material() {
+  private generate_material(): MeshLambertMaterial {
     return new THREE.MeshLambertMaterial({
       map: this.smoke_texture,
       emissive: new THREE.Color(this.demoForm.value.emissive!),
       opacity: this.demoForm.value.opacity!,
       transparent: true
     });
+  }
+
+  private generate_particle(size: PlaneGeometry, material: MeshLambertMaterial): Mesh<PlaneGeometry, MeshLambertMaterial> {
+    const particle = new THREE.Mesh(size, material);
+    particle.scale.set(2, 2, 2);
+    const x = random_number_in_range((window.innerWidth/2)*-1, window.innerWidth/2)
+    const y = random_number_in_range((window.innerHeight/2)*-1, -200)
+    const z = Math.random() * 1000 - 100
+    particle.position.set(x, y, z);
+    particle.rotation.z = Math.random() * 360;
+    return particle;
   }
 
   private animate() {
