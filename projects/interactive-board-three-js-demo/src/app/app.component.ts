@@ -1,13 +1,13 @@
 import {Component, ElementRef, HostListener, OnInit, viewChild} from '@angular/core';
 import * as THREE from 'three';
 import {
-  CanvasTexture,
+  CanvasTexture, Color,
   Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
   PlaneGeometry, Raycaster,
-  Scene,
-  Vector2,
+  Scene, SphereGeometry,
+  Vector2, Vector3,
   WebGLRenderer
 } from 'three';
 
@@ -18,14 +18,15 @@ import {
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
+
   private canvas_ref = viewChild<ElementRef<HTMLCanvasElement>>('canvas_ref')
   private scene = new Scene();
-
-  private camera?: OrthographicCamera;
-  private renderer?: WebGLRenderer;
+  private camera!: OrthographicCamera;
+  private renderer!: WebGLRenderer;
   private tiles: { mesh: Mesh, row: number, col: number, clicked: boolean }[] = [];
   private raycaster = new Raycaster();
   private mouse = new Vector2();
+  private particles: { mesh: Mesh, velocity: THREE.Vector3, lifetime: number }[] = []; // Store particles
 
   @HostListener('click', ['$event']) on_mouse_click(event: MouseEvent) {
     // Calculate normalized mouse coordinates
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Update the raycaster
-    this.raycaster.setFromCamera(this.mouse, this.camera!);
+    this.raycaster.setFromCamera(this.mouse, this.camera);
 
     // Calculate objects intersecting the picking ray
     const intersects = this.raycaster.intersectObjects(this.tiles.map(tile => tile.mesh));
@@ -44,13 +45,17 @@ export class AppComponent implements OnInit {
         clickedTile.clicked = !clickedTile.clicked;
         console.log(`Tile at (${clickedTile.col}, ${clickedTile.row}) clicked. Clicked state: ${clickedTile.clicked}`);
 
+        const material = clickedTile.mesh.material as MeshBasicMaterial;
+
         if (clickedTile.clicked) {
-          (clickedTile.mesh.material as MeshBasicMaterial).color.set(0x008000);
+          material.color.set(0xd36d6d);
+          material.map = null;
+          this.createExplosion(clickedTile.mesh.position, new Color(0xff0000)); // Create explosion
         } else {
-          (clickedTile.mesh.material as MeshBasicMaterial).color.set(0xffffff);
-          (clickedTile.mesh.material as MeshBasicMaterial).map = this.createGradientTile(256, 256);
+          material.color.set(0xffffff);
+          material.map = this.createGradientTile(256, 256);
         }
-        (clickedTile.mesh.material as MeshBasicMaterial).needsUpdate = true;
+        material.needsUpdate = true;
       }
     }
   }
@@ -74,7 +79,7 @@ export class AppComponent implements OnInit {
       this.renderer = new THREE.WebGLRenderer({canvas: this.canvas_ref()!.nativeElement});
     }
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer!.render(this.scene, this.camera!);
+    this.renderer.render(this.scene, this.camera);
 
   }
 
@@ -85,12 +90,23 @@ export class AppComponent implements OnInit {
   private init() {
     this.setupCameraAndRenderer();
     this.create3x3Board(this.scene);
-    this.renderer!.render(this.scene, this.camera!);
-    this.renderer!.setAnimationLoop(this.animate.bind(this))
+    this.renderer.render(this.scene, this.camera);
+    this.renderer.setAnimationLoop(this.animate.bind(this))
   }
 
   private animate() {
-    this.renderer!.render(this.scene, this.camera!);
+    this.renderer.render(this.scene, this.camera);
+    // Update particles
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const particle = this.particles[i];
+      particle.mesh.position.add(particle.velocity);
+      particle.lifetime -= 0.016; // Approximate 60 FPS
+
+      if (particle.lifetime <= 0) {
+        this.scene.remove(particle.mesh);
+        this.particles.splice(i, 1);
+      }
+    }
   }
 
   /**
@@ -146,6 +162,24 @@ export class AppComponent implements OnInit {
       }
     }
     return this.tiles;
+  }
+
+  private createExplosion(position: Vector3, color: Color): void {
+    const particleCount = 20; // Number of particles in the explosion
+    for (let i = 0; i < particleCount; i++) {
+      const geometry = new SphereGeometry(0.05, 8, 8); // Small sphere particles
+      const material = new MeshBasicMaterial({ color: color });
+      const particle = new Mesh(geometry, material);
+      particle.position.copy(position);
+
+      const velocity = new Vector3(
+        (Math.random() - 0.5) * 0.2, // Random velocity
+        (Math.random() - 0.5) * 0.2,
+        0
+      );
+      this.particles.push({ mesh: particle, velocity: velocity, lifetime: 1.0 }); // Lifetime in seconds
+      this.scene.add(particle);
+    }
   }
 
 }
