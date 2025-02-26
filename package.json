@@ -12,8 +12,11 @@
     "start:spacebar-listener": "ng serve --project spacebar-listener",
     "build:spacebar-listener": "ng build --project spacebar-listener",
 
-    "start:interactive-board-three-js-demo": "ng serve --project interactive-board-three-js-demo --port 43001",
+    "start:interactive-board-three-js-demo": "ng serve --project interactive-board-three-js-demo --port 4301",
     "build:interactive-board-three-js-demo": "ng build --project interactive-board-three-js-demo",
+
+    "start:minesweeper-game-demo": "ng serve --project minesweeper-game-demo --port 4302",
+    "build:minesweeper-game-demo": "ng build --project minesweeper-game-demo",
 
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",

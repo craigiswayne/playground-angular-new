@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="custom-form-control"
+app_name="minesweeper-game"
 ng generate application "$app_name-demo" --interactive --minimal true --routing false --server-routing false --skip-tests true --ssr false
 ```
 
