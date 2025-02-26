@@ -1,6 +1,7 @@
-<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'http://sales-demo.uroc.com/AztecRush/game-AztecRush/assets/images/basegameBG.webp?v=1.0.23'" alt="landscape"/>
+<!--<img class='arena' [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'http://sales-demo.uroc.com/AztecRush/game-AztecRush/assets/images/basegameBG.webp?v=1.0.23'" alt="landscape"/>-->
 <!--<img [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/arena-background-landscape-no-mist.png'" alt="landscape"/>-->
-<img class="sky" [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/sky.png'" alt="sky" />
+<img #sky_image class="sky" [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/sky.png'" alt="sky" />
+<img class="landscape" [style.opacity]="demoForm.value.background_opacity" loading="lazy" [attr.src]="'/landscape.png'" alt="sky" />
 <canvas #canvas_ref></canvas>
 <!--<img class="podium" [attr.src]="'/arena-background-podium.png'" alt="podium" [style.opacity]="demoForm.value.background_opacity"/>-->
 <form [formGroup]="demoForm">

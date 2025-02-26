@@ -49,6 +49,42 @@ const presets: {
 })
 export class AppComponent implements OnInit, OnDestroy {
 
+  private sky_image_ref = viewChild<ElementRef<HTMLImageElement>>('sky_image');
+
+  // TODO move this to a directive or something
+  @HostListener('mouseleave') on_mouse_leave() {
+    // this.sky_image_ref()!.nativeElement.style.removeProperty('sky-rotate-x');
+    // this.sky_image_ref()!.nativeElement.style.removeProperty('sky-rotate-y');
+  }
+
+  @HostListener('mousemove', ['$event']) on_mouse_move(mouse_event: MouseEvent) {
+    const rotate_x_deg_minimum = -10;
+    const rotate_x_deg_maximum = 10;
+    const rotate_x_deg_length = rotate_x_deg_maximum - rotate_x_deg_minimum;
+    const x_percent = mouse_event.clientX / window.innerWidth
+    const rotate_x = rotate_x_deg_minimum + (rotate_x_deg_length * x_percent)
+
+    const rotate_y_deg_minimum = -10;
+    const rotate_y_deg_maximum = 10;
+    const rotate_y_deg_length = rotate_y_deg_maximum - rotate_y_deg_minimum;
+    const y_percent = mouse_event.clientY / window.innerHeight
+    const rotate_y = rotate_y_deg_minimum + (rotate_y_deg_length * y_percent)
+
+    //  | ---------------------------------------|
+    // -10 ------------------------------------ 10
+    //                      x%
+
+    // console.log('mouse_event', mouse_event);
+    // console.log('window dimensions', window.innerWidth, window.innerHeight);
+    // console.log('x%', x_percent);
+    // console.log('y%', y_percent);
+    //
+    console.log('x/y', rotate_x, rotate_y)
+
+    this.sky_image_ref()!.nativeElement.style.setProperty('--sky-rotate-x', `${rotate_x}deg`);
+    this.sky_image_ref()!.nativeElement.style.setProperty('--sky-rotate-y', `${rotate_y}deg`);
+  }
+
   private canvas_ref = viewChild<ElementRef<HTMLCanvasElement>>('canvas_ref')
   private clock: Clock = new THREE.Clock();
   private camera: PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1500)

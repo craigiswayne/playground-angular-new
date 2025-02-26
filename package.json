@@ -12,6 +12,9 @@
     "start:spacebar-listener": "ng serve --project spacebar-listener",
     "build:spacebar-listener": "ng build --project spacebar-listener",
 
+    "start:interactive-board-three-js-demo": "ng serve --project interactive-board-three-js-demo --port 43001",
+    "build:interactive-board-three-js-demo": "ng build --project interactive-board-three-js-demo",
+
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "build:touch-events-demo": "ng build --project touch-events-demo",
 
