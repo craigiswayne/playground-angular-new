@@ -20,13 +20,25 @@ export class ThreeJsSceneComponent implements AfterViewInit {
     this.renderer.setSize( window.innerWidth, window.innerHeight );
   }
 
-  ngAfterViewInit(): void {
-    console.log('ngOnInit')
-    this.init();
+  constructor() {
+    this.setup_gui_controls();
   }
 
-  protected init(): void {
-    this.setup_gui_controls();
+  ngAfterViewInit(): void {
+    console.log('ngOnInit')
+    this.setup();
+  }
+
+  /**
+   * Run before the setup
+   * @protected
+   */
+  protected pre_setup(): void {
+
+  }
+
+  private setup(): void {
+    this.pre_setup();
     this.setup_camera_and_renderer();
     this.render();
   }
@@ -35,7 +47,7 @@ export class ThreeJsSceneComponent implements AfterViewInit {
    * This is meant to be overridden
    * @private
    */
-  private setup_gui_controls(){}
+  private async setup_gui_controls(){}
 
   private setup_camera_and_renderer(): void {
     const aspect_ratio = window.innerWidth / window.innerHeight;

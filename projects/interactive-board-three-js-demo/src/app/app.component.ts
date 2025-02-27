@@ -67,9 +67,8 @@ export class AppComponent extends ThreeJsSceneComponent {
     material.needsUpdate = true;
   }
 
-  protected override init() {
+  protected override pre_setup() {
     this.create3x3Board(this.scene);
-    super.init();
   }
 
   protected override pre_render() {
