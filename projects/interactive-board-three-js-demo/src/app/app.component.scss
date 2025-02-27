@@ -3,3 +3,7 @@
   width: 100vw;
   height: 100vh;
 }
+
+:host {
+  background-image: radial-gradient( circle farthest-corner at 48.4% 47.5%,  rgba(122,183,255,1) 0%, rgba(21,83,161,1) 90% );
+}

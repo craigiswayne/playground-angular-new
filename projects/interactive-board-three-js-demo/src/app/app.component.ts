@@ -65,7 +65,7 @@ export class AppComponent implements OnInit {
     if(tile_at_position.is_mine){
       material.color.set(0xd36d6d);
       material.map = null;
-      this.createExplosion(tile_at_position.mesh.position, new Color(0xff0000)); // Create explosion
+      this.create_explosion(tile_at_position.mesh.position, new Color(0xff0000)); // Create explosion
     } else {
       material.color.set(0x008000);
       material.map = this.createGradientTile(256, 256);
@@ -73,7 +73,23 @@ export class AppComponent implements OnInit {
     material.needsUpdate = true;
   }
 
-  @HostListener('window:resize') setupCameraAndRenderer() {
+  @HostListener('window:resize') handle_window_resize() {
+    this.setup_camera_and_renderer();
+  }
+
+  ngOnInit(): void {
+    console.log('ngOnInit')
+    this.init()
+  }
+
+  private init() {
+    this.setup_camera_and_renderer();
+    this.create3x3Board(this.scene);
+    this.renderer.setAnimationLoop(this.animate.bind(this))
+  }
+
+  private setup_camera_and_renderer(){
+    console.log('setup_camera_and_renderer')
     const aspectRatio = window.innerWidth / window.innerHeight;
     const viewSize = 3; // Adjust this to control the overall view size
 
@@ -88,22 +104,13 @@ export class AppComponent implements OnInit {
     this.camera.position.z = 5;
 
     if (!this.renderer) { // Create renderer only once
-      this.renderer = new THREE.WebGLRenderer({canvas: this.canvas_ref()!.nativeElement});
+      this.renderer = new THREE.WebGLRenderer({
+        canvas: this.canvas_ref()!.nativeElement,
+        alpha: true,
+      });
     }
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.render(this.scene, this.camera);
-
-  }
-
-  ngOnInit(): void {
-    this.init()
-  }
-
-  private init() {
-    this.setupCameraAndRenderer();
-    this.create3x3Board(this.scene);
-    this.renderer.render(this.scene, this.camera);
-    this.renderer.setAnimationLoop(this.animate.bind(this))
   }
 
   private animate() {
@@ -150,13 +157,18 @@ export class AppComponent implements OnInit {
   }
 
   private create3x3Board(scene: Scene, tileSize = 1, spacing = 0.1) {
+    console.log('create3x3Board')
     const total_rows = 3,
       total_columns = 3,
       total_mines = Math.round(total_rows*total_rows*0.333);
 
+    console.log(total_rows, total_columns, total_mines);
     const mines: number[] = [];
 
+    // TODO there is a bug here where mines are not being added
+    // move this code out to an asynchronous function, then on the click function, check if the tile index is a mine
     while(mines.length < total_mines){
+      console.log('adding mine', mines.length, total_mines);
       const random_number = Math.round(Math.random()*((total_rows*total_columns)-1));
       if(mines.includes(random_number)){
         return;
@@ -166,6 +178,7 @@ export class AppComponent implements OnInit {
     console.log('mines', mines);
     this.tiles = [];
     for (let row = 0; row < total_rows; row++) {
+      console.log('creating tile');
       for (let col = 0; col < total_columns; col++) {
         const tileTexture = this.createGradientTile(256, 256); // Adjust resolution as needed
         if (!tileTexture) continue; // Skip if texture creation failed
@@ -192,7 +205,8 @@ export class AppComponent implements OnInit {
     return this.tiles;
   }
 
-  private createExplosion(position: Vector3, color: Color): void {
+  private create_explosion(position: Vector3, color: Color): void {
+    console.log('create_explosion');
     const particleCount = 20; // Number of particles in the explosion
     for (let i = 0; i < particleCount; i++) {
       const geometry = new SphereGeometry(0.05, 8, 8); // Small sphere particles
