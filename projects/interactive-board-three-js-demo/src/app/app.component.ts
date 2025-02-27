@@ -1,5 +1,4 @@
 import {Component, HostListener} from '@angular/core';
-import * as THREE from 'three';
 import {
   CanvasTexture, Color,
   Mesh,
@@ -8,7 +7,7 @@ import {
   Scene, SphereGeometry,
   Vector2, Vector3,
 } from 'three';
-import {ThreeJsSceneComponent} from '../../../library/components/three-js-scene/three-js-scene.component';
+import {ThreeJsScaffoldComponent} from '../../../library/components/three-js-scaffold/three-js-scaffold.component';
 
 interface Tile {
   mesh: Mesh,
@@ -23,12 +22,12 @@ interface Tile {
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent extends ThreeJsSceneComponent {
+export class AppComponent extends ThreeJsScaffoldComponent {
 
   private tiles: Tile[] = [];
   private raycaster = new Raycaster();
   private mouse = new Vector2();
-  private particles: { mesh: Mesh, velocity: THREE.Vector3, lifetime: number }[] = [];
+  private particles: { mesh: Mesh, velocity: Vector3, lifetime: number }[] = [];
 
   @HostListener('click', ['$event']) on_mouse_click(event: MouseEvent) {
     // Calculate normalized mouse coordinates
@@ -40,15 +39,15 @@ export class AppComponent extends ThreeJsSceneComponent {
 
     // Calculate objects intersecting the picking ray
     const tiles_clicked = this.raycaster.intersectObjects(this.tiles.map(tile => tile.mesh));
-    if(tiles_clicked.length === 0 ) {
+    if (tiles_clicked.length === 0) {
       return;
     }
     const tile_at_position = this.tiles.find(tile => tile.mesh === tiles_clicked[0].object);
-    if(!tile_at_position){
+    if (!tile_at_position) {
       return;
     }
 
-    if(tile_at_position.clicked){
+    if (tile_at_position.clicked) {
       return;
     }
 
@@ -56,7 +55,7 @@ export class AppComponent extends ThreeJsSceneComponent {
     console.log(`Tile at (${tile_at_position.col}, ${tile_at_position.row}) index: clicked. Clicked state: ${tile_at_position.clicked}`);
     const material = tile_at_position.mesh.material as MeshBasicMaterial;
 
-    if(tile_at_position.is_mine){
+    if (tile_at_position.is_mine) {
       material.color.set(0xd36d6d);
       material.map = null;
       this.create_explosion(tile_at_position.mesh.position, new Color(0xff0000)); // Create explosion
@@ -116,17 +115,17 @@ export class AppComponent extends ThreeJsSceneComponent {
     console.log('create3x3Board')
     const total_rows = 3,
       total_columns = 3,
-      total_mines = Math.round(total_rows*total_rows*0.333);
+      total_mines = Math.round(total_rows * total_rows * 0.333);
 
     console.log(total_rows, total_columns, total_mines);
     const mines: number[] = [];
 
     // TODO there is a bug here where mines are not being added
     // move this code out to an asynchronous function, then on the click function, check if the tile index is a mine
-    while(mines.length < total_mines){
+    while (mines.length < total_mines) {
       console.log('adding mine', mines.length, total_mines);
-      const random_number = Math.round(Math.random()*((total_rows*total_columns)-1));
-      if(mines.includes(random_number)){
+      const random_number = Math.round(Math.random() * ((total_rows * total_columns) - 1));
+      if (mines.includes(random_number)) {
         return;
       }
       mines.push(random_number);

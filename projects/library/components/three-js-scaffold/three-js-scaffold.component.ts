@@ -5,7 +5,7 @@ import GUI from 'lil-gui';
 @Component({
   template: ''
 })
-export class ThreeJsSceneComponent implements AfterViewInit {
+export class ThreeJsScaffoldComponent implements AfterViewInit {
   private canvas_ref= viewChild<ElementRef<HTMLCanvasElement>>('canvas_ref')
   protected scene = new Scene();
   protected camera!: PerspectiveCamera;
