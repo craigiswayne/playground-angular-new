@@ -1,20 +1,21 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, HostListener, inject} from '@angular/core';
 import {
-  CanvasTexture, Color,
+  Color,
   Mesh,
   MeshBasicMaterial,
   PlaneGeometry, Raycaster,
-  Scene, SphereGeometry,
+  SphereGeometry, Texture, TextureLoader,
   Vector2, Vector3,
 } from 'three';
 import {ThreeJsScaffoldComponent} from '../../../library/components/three-js-scaffold/three-js-scaffold.component';
+import {MyThreeJsService} from '../../../library/services/my-three-js/my-three-js.service';
 
 interface Tile {
+  index: number,
   mesh: Mesh,
   row: number,
   col: number,
-  clicked: boolean,
-  is_mine: boolean
+  clicked: boolean
 }
 
 @Component({
@@ -24,10 +25,17 @@ interface Tile {
 })
 export class AppComponent extends ThreeJsScaffoldComponent {
 
+  private myThreeJS = inject(MyThreeJsService);
+
+  private mines: number[] = [];
   private tiles: Tile[] = [];
   private raycaster = new Raycaster();
   private mouse = new Vector2();
   private particles: { mesh: Mesh, velocity: Vector3, lifetime: number }[] = [];
+  private texture_loader = new TextureLoader();
+  private bomb_image!: Texture;
+  private smiley_face!: Texture;
+  private box_question!: Texture;
 
   @HostListener('click', ['$event']) on_mouse_click(event: MouseEvent) {
     // Calculate normalized mouse coordinates
@@ -47,27 +55,13 @@ export class AppComponent extends ThreeJsScaffoldComponent {
       return;
     }
 
-    if (tile_at_position.clicked) {
-      return;
-    }
-
-    tile_at_position.clicked = true;
-    console.log(`Tile at (${tile_at_position.col}, ${tile_at_position.row}) index: clicked. Clicked state: ${tile_at_position.clicked}`);
-    const material = tile_at_position.mesh.material as MeshBasicMaterial;
-
-    if (tile_at_position.is_mine) {
-      material.color.set(0xd36d6d);
-      material.map = null;
-      this.create_explosion(tile_at_position.mesh.position, new Color(0xff0000)); // Create explosion
-    } else {
-      material.color.set(0x008000);
-      material.map = this.createGradientTile(256, 256);
-    }
-    material.needsUpdate = true;
+    this.handle_tile_click(tile_at_position);
   }
 
   protected override pre_setup() {
-    this.create3x3Board(this.scene);
+    this.determine_mine_positions();
+    this.load_textures();
+    this.create3x3Board();
   }
 
   protected override pre_render() {
@@ -83,81 +77,74 @@ export class AppComponent extends ThreeJsScaffoldComponent {
     }
   }
 
-  /**
-   *
-   * @param width
-   * @param height
-   * @private
-   *
-   * @throws Error
-   */
-  private createGradientTile(width: number, height: number): CanvasTexture {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d');
-
-    if (!ctx) {
-      throw new Error('Canvas is not available');
+  private async determine_mine_positions(): Promise<void> {
+    const total_tiles = 9;
+    const total_mines = 3;
+    while (this.mines.length < total_mines) {
+      const random_number = Math.round(Math.random() * (total_tiles - 1));
+      if (this.mines.includes(random_number)) {
+        continue;
+      }
+      console.log('adding mine', random_number);
+      this.mines.push(random_number);
     }
-
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, 'black');
-    gradient.addColorStop(1, 'gray');
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-
-    return new CanvasTexture(canvas);
+    console.log('mines', this.mines);
   }
 
-  private create3x3Board(scene: Scene, tileSize = 1, spacing = 0.1) {
-    console.log('create3x3Board')
+  private async load_textures(): Promise<void> {
+    this.bomb_image = this.texture_loader.load('/bomb.png');
+    this.smiley_face = this.texture_loader.load('/happy.png')
+    this.box_question = this.texture_loader.load('/box-question.png')
+  }
+
+  private create_tile_mesh(tile_size: number): Mesh {
+    const texture = this.box_question;
+    const tileMaterial = new MeshBasicMaterial({map: texture});
+    const tileGeometry = new PlaneGeometry(tile_size, tile_size);
+    return new Mesh(tileGeometry, tileMaterial);
+  }
+
+  private create3x3Board(tileSize = 1, spacing = 0.1) {
     const total_rows = 3,
-      total_columns = 3,
-      total_mines = Math.round(total_rows * total_rows * 0.333);
+      total_columns = 3;
 
-    console.log(total_rows, total_columns, total_mines);
-    const mines: number[] = [];
-
-    // TODO there is a bug here where mines are not being added
-    // move this code out to an asynchronous function, then on the click function, check if the tile index is a mine
-    while (mines.length < total_mines) {
-      console.log('adding mine', mines.length, total_mines);
-      const random_number = Math.round(Math.random() * ((total_rows * total_columns) - 1));
-      if (mines.includes(random_number)) {
-        return;
-      }
-      mines.push(random_number);
-    }
-    console.log('mines', mines);
-    this.tiles = [];
     for (let row = 0; row < total_rows; row++) {
-      console.log('creating tile');
       for (let col = 0; col < total_columns; col++) {
-        const tileTexture = this.createGradientTile(256, 256); // Adjust resolution as needed
-        if (!tileTexture) continue; // Skip if texture creation failed
-
-        const tileMaterial = new MeshBasicMaterial({map: tileTexture});
-        const tileGeometry = new PlaneGeometry(tileSize, tileSize);
-        const tileMesh: Mesh = new Mesh(tileGeometry, tileMaterial);
-
+        const tile_mesh = this.create_tile_mesh(tileSize);
         const x = (col - 1) * (tileSize + spacing);
         const y = (1 - row) * (tileSize + spacing); // Invert row for typical coordinate systems.
-
-        tileMesh.position.set(x, y, 0); // Position in 2D plane
-        scene.add(tileMesh);
-        const tile_index = row * total_columns + col;
+        tile_mesh.position.set(x, y, 0); // Position in 2D plane
+        this.scene.add(tile_mesh);
         this.tiles.push({
-          mesh: tileMesh,
+          mesh: tile_mesh,
           row: row,
           col: col,
           clicked: false,
-          is_mine: mines.includes(tile_index)
+          index: row * total_columns + col
         });
       }
     }
     return this.tiles;
+  }
+
+  private async handle_tile_click(tile: Tile): Promise<void> {
+    if (tile.clicked) {
+      return;
+    }
+
+    tile.clicked = true;
+    const material = tile.mesh.material as MeshBasicMaterial;
+    const is_mine = this.mines.includes(tile.index);
+    if (is_mine) {
+      material.map = this.bomb_image;
+      material.transparent = true;
+      material.opacity = 1;
+      this.create_explosion(tile.mesh.position, new Color(0xff0000));
+    } else {
+      material.transparent = true;
+      material.map = this.smiley_face;
+    }
+    material.needsUpdate = true;
   }
 
   private create_explosion(position: Vector3, color: Color): void {

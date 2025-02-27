@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, viewChild, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, viewChild} from '@angular/core';
 import {PerspectiveCamera, Scene, WebGLRenderer} from 'three';
 import GUI from 'lil-gui';
 
