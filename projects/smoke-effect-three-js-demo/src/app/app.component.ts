@@ -168,7 +168,7 @@ export class AppComponent implements OnInit, OnDestroy {
   @HostBinding('class.no-images') no_images = false;
 
   @HostListener('window:resize') on_window_resize() {
-    this.resize();
+    this.setup_camera_and_renderer();
   }
 
   ngOnInit() {
@@ -179,7 +179,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.stop_effects();
   }
 
-  private resize() {
+  private setup_camera_and_renderer() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer!.setSize(window.innerWidth, window.innerHeight);

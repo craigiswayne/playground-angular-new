@@ -1,126 +1,89 @@
-import {AfterViewInit, Component, ElementRef, HostListener, OnInit, viewChild} from '@angular/core';
+import {Component, AfterViewInit, ElementRef, ViewChild, HostListener} from '@angular/core';
 import * as THREE from 'three';
 import {
-  CanvasTexture, Color, Group,
   Mesh,
+  PerspectiveCamera,
+  Raycaster,
+  Scene,
+  Vector2,
+  WebGLRenderer,
   MeshBasicMaterial,
-  OrthographicCamera, Raycaster,
-  Scene, SphereGeometry,
-  Vector2, Vector3,
-  WebGLRenderer
+  Color,
+  SphereGeometry,
+  EdgesGeometry,
+  LineBasicMaterial,
+  LineSegments,
+  AmbientLight,
+  DirectionalLight
 } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
-
-interface Tile {
-  mesh: Mesh,
-  row: number,
-  col: number,
-  clicked: boolean,
-  is_mine: boolean
-}
+import {GLTFLoader, TrackballControls} from 'three/examples/jsm/Addons.js';
+import GUI from 'lil-gui';
 
 @Component({
   selector: 'app-root',
-  imports: [],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
+  @ViewChild('canvas_ref') private canvasRef!: ElementRef;
+  @HostListener('click', ['$event']) handle_click(mouse_event: MouseEvent){
+    this.onMouseClick(mouse_event);
+  }
 
-  private canvas_ref = viewChild<ElementRef<HTMLCanvasElement>>('canvas_ref')
   private scene!: Scene;
-  private camera!: OrthographicCamera;
+  private camera!: PerspectiveCamera;
   private renderer!: WebGLRenderer;
-  private tiles: Tile[] = [];
+  private tiles: { mesh: Mesh; row: number; col: number; clicked: boolean }[] = [];
   private raycaster = new Raycaster();
   private mouse = new Vector2();
-  private particles: { mesh: Mesh, velocity: THREE.Vector3, lifetime: number }[] = []; // Store particles
-  private crateModel: Group | null = null; // Store the loaded crate model
+  private particles: { mesh: Mesh; velocity: THREE.Vector3; lifetime: number }[] = [];
+  private crateModel: THREE.Group | null = null;
+  private gui: GUI = new GUI();
+  private controls!: TrackballControls;
 
-  @HostListener('click', ['$event']) on_mouse_click(event: MouseEvent) {
-    // Calculate normalized mouse coordinates
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Update the raycaster
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-
-    // Calculate objects intersecting the picking ray
-    const tiles_clicked = this.raycaster.intersectObjects(this.tiles.map(tile => tile.mesh));
-    if(tiles_clicked.length === 0 ) {
-      return;
-    }
-    const tile_at_position = this.tiles.find(tile => tile.mesh === tiles_clicked[0].object);
-    if(!tile_at_position){
-      return;
-    }
-
-    if(tile_at_position.clicked){
-      return;
-    }
-
-    tile_at_position.clicked = true;
-    console.log(`Tile at (${tile_at_position.col}, ${tile_at_position.row}) index: clicked. Clicked state: ${tile_at_position.clicked}`);
-    const material = tile_at_position.mesh.material as MeshBasicMaterial;
-
-    if(tile_at_position.is_mine){
-      material.color.set(0xd36d6d);
-      material.map = null;
-      this.createExplosion(tile_at_position.mesh.position, new Color(0xff0000)); // Create explosion
-    } else {
-      material.color.set(0x008000);
-      material.map = this.createGradientTile(256, 256);
-    }
-    material.needsUpdate = true;
-  }
-
-  @HostListener('window:resize') setupCameraAndRenderer() {
-    const aspectRatio = window.innerWidth / window.innerHeight;
-    const viewSize = 3; // Adjust this to control the overall view size
-
-    this.camera = new THREE.OrthographicCamera(
-      -viewSize * aspectRatio, // left
-      viewSize * aspectRatio,  // right
-      viewSize,                // top
-      -viewSize,               // bottom
-      0.1,                     // near
-      10                       // far
-    );
-    this.camera.position.z = 5;
-
-    if (!this.renderer) { // Create renderer only once
-      this.renderer = new THREE.WebGLRenderer({canvas: this.canvas_ref()!.nativeElement});
-    }
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.render(this.scene, this.camera);
-
-  }
+  private gui_control_options = {
+    rotation_speed: 0.01,
+    crateScale: 1,
+    crateRotationX: 0,
+    outlineColor: '#000000',
+    crateColor: '#a7947a'
+  };
 
   ngAfterViewInit(): void {
-    this.init()
+    this.init();
   }
 
   private loadCrateModel(): void {
     const loader = new GLTFLoader();
     loader.load('/crate.glb', (gltf) => {
-      console.log('gltf', gltf);
       this.crateModel = gltf.scene;
-      this.create3x3Board(this.scene); // Create board after model loads
+      this.create3x3Board(this.scene);
+      this.setupGUI();
+      // const light = new THREE.HemisphereLight(0xd6e6ff, 0xa38c08, 1);
+      // this.scene.add(light);
+      this.addLights();
+    }, undefined, (error) => {
+      console.error('Error loading crate.glb:', error);
     });
   }
 
+  private addLights(): void {
+    const ambientLight = new AmbientLight(0xffffff);
+    this.scene.add(ambientLight);
+
+    const directionalLight = new DirectionalLight(0xffffff, 5);
+    directionalLight.position.set(10, 10, 10);
+    this.scene.add(directionalLight);
+  }
+
   private create3x3Board(scene: Scene, tileSize: number = 1, spacing: number = 0.1): void {
-    if (!this.crateModel){
-      debugger;
-      return; // Ensure model is loaded
-    }
+    if (!this.crateModel) return;
 
     for (let row = 0; row < 3; row++) {
       for (let col = 0; col < 3; col++) {
-        const crateClone = this.crateModel.clone(); // Clone the crate model
+        const crateClone = this.crateModel.clone();
         // @ts-ignore
-        const tileMesh = crateClone as Mesh; //Type assertion.
+        const tileMesh = crateClone as Mesh;
 
         const x = (col - 1) * (tileSize + spacing);
         const y = (1 - row) * (tileSize + spacing);
@@ -128,85 +91,161 @@ export class AppComponent implements AfterViewInit {
         crateClone.position.set(x, y, 0);
         scene.add(crateClone);
 
+        const edges = new EdgesGeometry(tileMesh.geometry);
+        const lineMaterial = new LineBasicMaterial({color: this.gui_control_options.outlineColor});
+        const outline = new LineSegments(edges, lineMaterial);
+        crateClone.add(outline);
+
         this.tiles.push({
           mesh: tileMesh,
           row: row,
           col: col,
           clicked: false,
-          is_mine: false
         });
       }
     }
   }
 
 
-  private init() {
+  private createExplosion(position: THREE.Vector3, color: THREE.Color): void {
+    const particleCount = 20;
+    for (let i = 0; i < particleCount; i++) {
+      const geometry = new SphereGeometry(0.05, 8, 8);
+      const material = new MeshBasicMaterial({color: color});
+      const particle = new Mesh(geometry, material);
+      particle.position.copy(position);
+
+      const velocity = new THREE.Vector3(
+        (Math.random() - 0.5) * 0.2,
+        (Math.random() - 0.5) * 0.2,
+        0
+      );
+      this.particles.push({mesh: particle, velocity: velocity, lifetime: 1.0});
+      this.scene.add(particle);
+    }
+  }
+
+  private init(): void {
     this.scene = new Scene();
     this.setupCameraAndRenderer();
     this.loadCrateModel();
-    this.renderer.render(this.scene, this.camera);
-    this.renderer.setAnimationLoop(this.animate.bind(this))
+
+    this.animate();
   }
 
-  private animate() {
+  private setupCameraAndRenderer(): void {
+    const aspectRatio = window.innerWidth / window.innerHeight;
+
+    this.camera = new PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+    this.camera.position.set(0, 0, 5);
+
+    if (!this.renderer) {
+      this.renderer = new WebGLRenderer({canvas: this.canvasRef.nativeElement, alpha: true});
+    }
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.controls = new TrackballControls( this.camera, this.renderer.domElement );
+  }
+
+  private onMouseClick(event: MouseEvent): void {
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const intersects = this.raycaster.intersectObjects(this.tiles.map(tile => tile.mesh));
+
+
+    if (intersects.length > 0) {
+      const clickedTile = this.tiles.find(tile => tile.mesh === intersects[0].object);
+      if (clickedTile) {
+        clickedTile.clicked = !clickedTile.clicked;
+        console.log(`Tile at (${clickedTile.col}, ${clickedTile.row}) clicked. Clicked state: ${clickedTile.clicked}`);
+
+        if (clickedTile.clicked) {
+          (clickedTile.mesh.material as MeshBasicMaterial).color.set(0xff0000);
+          (clickedTile.mesh.material as MeshBasicMaterial).map = null;
+          this.createExplosion(clickedTile.mesh.position, new Color(0xff0000));
+        } else {
+          (clickedTile.mesh.material as MeshBasicMaterial).color.set(0xffffff);
+        }
+        (clickedTile.mesh.material as MeshBasicMaterial).needsUpdate = true;
+      }
+    }
+  }
+
+
+  private animate(): void {
+    requestAnimationFrame(this.animate.bind(this));
     this.renderer.render(this.scene, this.camera);
-    // Update particles
+
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
       particle.mesh.position.add(particle.velocity);
-      particle.lifetime -= 0.016; // Approximate 60 FPS
+      particle.lifetime -= 0.016;
 
       if (particle.lifetime <= 0) {
         this.scene.remove(particle.mesh);
         this.particles.splice(i, 1);
       }
     }
+    this.updateCrateProperties();
+    this.rotateCrates();
   }
 
-  /**
-   * @param width
-   * @param height
-   * @private
-   *
-   * @throws Error
-   */
-  private createGradientTile(width: number, height: number): CanvasTexture {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext('2d');
-
-    if (!ctx) {
-      throw new Error('Canvas is not available');
-    }
-
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, 'black');
-    gradient.addColorStop(1, 'gray');
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-
-    return new CanvasTexture(canvas);
+  private rotateCrates(): void {
+    this.crateModel?.traverse((child) => {
+      // if (child instanceof Mesh) {
+        child.rotation.x += this.gui_control_options.rotation_speed;
+      // } else {
+      //   console.log('child is not an instance of Mesh');
+      // }
+    });
   }
 
 
-  private createExplosion(position: Vector3, color: Color): void {
-    const particleCount = 20; // Number of particles in the explosion
-    for (let i = 0; i < particleCount; i++) {
-      const geometry = new SphereGeometry(0.05, 8, 8); // Small sphere particles
-      const material = new MeshBasicMaterial({color: color});
-      const particle = new Mesh(geometry, material);
-      particle.position.copy(position);
-
-      const velocity = new Vector3(
-        (Math.random() - 0.5) * 0.2, // Random velocity
-        (Math.random() - 0.5) * 0.2,
-        0
-      );
-      this.particles.push({mesh: particle, velocity: velocity, lifetime: 1.0}); // Lifetime in seconds
-      this.scene.add(particle);
-    }
+  private onWindowResize(): void {
+    this.setupCameraAndRenderer();
   }
 
+  private setupGUI(): void {
+    if (!this.crateModel) return;
+
+    this.gui.add(this.gui_control_options, 'crateScale', 0.5, 2).name('Crate Scale').onChange(() => {
+      this.updateCrateProperties();
+    });
+    this.gui.add(this.gui_control_options, 'crateRotationX', 0, Math.PI * 2).name('Crate Rotation X').onChange(() => {
+      this.updateCrateProperties();
+    });
+    this.gui.addColor(this.gui_control_options, 'crateColor').name('Crate Color').onChange(() => {
+      this.updateCrateProperties();
+    });
+    this.gui.addColor(this.gui_control_options, 'outlineColor').name('Outline Color').onChange(() => {
+      this.updateOutlineColor();
+    });
+
+    this.gui.add(this.gui_control_options, 'rotation_speed', 0, 0.1).name('Rotation Speed').onChange(()=>{
+      this.rotateCrates();
+    })
+  }
+
+  private updateCrateProperties(): void {
+    if (!this.crateModel) return;
+
+    this.crateModel.scale.set(this.gui_control_options.crateScale, this.gui_control_options.crateScale, this.gui_control_options.crateScale);
+    this.crateModel.rotation.x = this.gui_control_options.crateRotationX;
+    // this.crateModel.traverse((child) => {
+      // if (child instanceof Mesh) {
+        // @ts-ignore
+      // (child.material as MeshBasicMaterial).color.set(this.gui_control_options.crateColor);
+      // }
+    // });
+  }
+
+  private updateOutlineColor(): void {
+    this.crateModel?.traverse((child) => {
+      // if (child instanceof LineSegments) {
+        // @ts-ignore
+      // (child.material as LineBasicMaterial).color.set(this.gui_control_options.outlineColor);
+      // }
+    });
+  }
 }

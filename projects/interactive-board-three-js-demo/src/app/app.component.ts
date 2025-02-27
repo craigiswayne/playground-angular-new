@@ -1,15 +1,14 @@
-import {Component, ElementRef, HostListener, OnInit, viewChild} from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import * as THREE from 'three';
 import {
   CanvasTexture, Color,
   Mesh,
   MeshBasicMaterial,
-  OrthographicCamera,
   PlaneGeometry, Raycaster,
   Scene, SphereGeometry,
   Vector2, Vector3,
-  WebGLRenderer
 } from 'three';
+import {ThreeJsSceneComponent} from '../../../library/components/three-js-scene/three-js-scene.component';
 
 interface Tile {
   mesh: Mesh,
@@ -21,20 +20,15 @@ interface Tile {
 
 @Component({
   selector: 'app-root',
-  imports: [],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends ThreeJsSceneComponent {
 
-  private canvas_ref = viewChild<ElementRef<HTMLCanvasElement>>('canvas_ref')
-  private scene = new Scene();
-  private camera!: OrthographicCamera;
-  private renderer!: WebGLRenderer;
   private tiles: Tile[] = [];
   private raycaster = new Raycaster();
   private mouse = new Vector2();
-  private particles: { mesh: Mesh, velocity: THREE.Vector3, lifetime: number }[] = []; // Store particles
+  private particles: { mesh: Mesh, velocity: THREE.Vector3, lifetime: number }[] = [];
 
   @HostListener('click', ['$event']) on_mouse_click(event: MouseEvent) {
     // Calculate normalized mouse coordinates
@@ -73,49 +67,12 @@ export class AppComponent implements OnInit {
     material.needsUpdate = true;
   }
 
-  @HostListener('window:resize') handle_window_resize() {
-    this.setup_camera_and_renderer();
-  }
-
-  ngOnInit(): void {
-    console.log('ngOnInit')
-    this.init()
-  }
-
-  private init() {
-    this.setup_camera_and_renderer();
+  protected override init() {
     this.create3x3Board(this.scene);
-    this.renderer.setAnimationLoop(this.animate.bind(this))
+    super.init();
   }
 
-  private setup_camera_and_renderer(){
-    console.log('setup_camera_and_renderer')
-    const aspectRatio = window.innerWidth / window.innerHeight;
-    const viewSize = 3; // Adjust this to control the overall view size
-
-    this.camera = new THREE.OrthographicCamera(
-      -viewSize * aspectRatio, // left
-      viewSize * aspectRatio,  // right
-      viewSize,                // top
-      -viewSize,               // bottom
-      0.1,                     // near
-      10                       // far
-    );
-    this.camera.position.z = 5;
-
-    if (!this.renderer) { // Create renderer only once
-      this.renderer = new THREE.WebGLRenderer({
-        canvas: this.canvas_ref()!.nativeElement,
-        alpha: true,
-      });
-    }
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.render(this.scene, this.camera);
-  }
-
-  private animate() {
-    this.renderer.render(this.scene, this.camera);
-    // Update particles
+  protected override pre_render() {
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const particle = this.particles[i];
       particle.mesh.position.add(particle.velocity);
