@@ -101,7 +101,7 @@ export class AppComponent implements OnInit {
 
   private init() {
     this.setupCameraAndRenderer();
-    this.create_board(this.scene);
+    this.create3x3Board(this.scene);
     this.renderer.render(this.scene, this.camera);
     this.renderer.setAnimationLoop(this.animate.bind(this))
   }
@@ -149,7 +149,7 @@ export class AppComponent implements OnInit {
     return new CanvasTexture(canvas);
   }
 
-  private create_board(scene: Scene, tileSize = 1, spacing = 0.1) {
+  private create3x3Board(scene: Scene, tileSize = 1, spacing = 0.1) {
     const total_rows = 3,
       total_columns = 3,
       total_mines = Math.round(total_rows*total_rows*0.333);
