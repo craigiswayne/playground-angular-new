@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostBinding, HostListener, inject, OnDestroy, OnInit, viewChild} from '@angular/core';
+import {Component, ElementRef, HostBinding, HostListener, OnDestroy, OnInit, viewChild} from '@angular/core';
 import * as THREE from 'three';
 import {
   Clock,
@@ -9,11 +9,9 @@ import {
   WebGLRenderer,
   PlaneGeometry,
   Texture,
-  Vector3, BufferGeometry, Line, Vector2, LineBasicMaterial
+  Vector3, BufferGeometry, Line, LineBasicMaterial
 } from 'three';
 import GUI from 'lil-gui';
-import {LineMaterial} from 'three/examples/jsm/lines/LineMaterial.js';
-
 const random_number_in_range = (min: number, max: number): number => {
   return Math.random() * (max - min) + min;
 }
@@ -224,12 +222,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private async drawHorizontalLine(): Promise<void> {
     const material = new LineBasicMaterial({color: 0xffff00}); // Yellow color
-
-    // const material = new LineMaterial({
-    //   color: 0xffff00, // Yellow color
-    //   linewidth: 3, // Line thickness
-    //   resolution: new Vector2(window.innerWidth, window.innerHeight), // Required for LineMaterial
-    // });
     const points = [];
     points.push(new Vector3(-1 * window.innerWidth, this.max_smoke_height, 0)); // Start point (adjust -10 for scene width)
     points.push(new Vector3(window.innerWidth, this.max_smoke_height, 0)); // End point (adjust 10 for scene width)

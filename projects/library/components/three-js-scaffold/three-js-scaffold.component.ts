@@ -1,6 +1,8 @@
 import {AfterViewInit, Component, ElementRef, HostListener, viewChild} from '@angular/core';
 import {PerspectiveCamera, Scene, WebGLRenderer} from 'three';
 import GUI from 'lil-gui';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
 
 @Component({
   template: ''
@@ -20,9 +22,7 @@ export class ThreeJsScaffoldComponent implements AfterViewInit {
     this.renderer.setSize( window.innerWidth, window.innerHeight );
   }
 
-  constructor() {
-    this.setup_gui_controls();
-  }
+  constructor() {}
 
   ngAfterViewInit(): void {
     console.log('ngOnInit')
@@ -39,22 +39,31 @@ export class ThreeJsScaffoldComponent implements AfterViewInit {
 
   private setup(): void {
     this.pre_setup();
-    this.setup_camera_and_renderer();
+    this.setup_camera();
+    this.setup_gui_controls();
+    this.setup_lighting();
+    this.setup_renderer();
     this.render();
   }
 
-  /**
-   * This is meant to be overridden
-   * @private
-   */
-  private async setup_gui_controls(){}
-
-  private setup_camera_and_renderer(): void {
+  private setup_camera(){
     const aspect_ratio = window.innerWidth / window.innerHeight;
-
     this.camera = new PerspectiveCamera(75, aspect_ratio, 0.1, 1000);
-    this.camera.position.set(0, 0, 5);
+    this.camera.position.z = 5;
+  }
 
+  private setup_gui_controls(){
+    const controls = new OrbitControls(this.camera, this.canvas_ref()?.nativeElement); // Initialize controls
+    controls.enableDamping = true; // Optional, adds damping for smoother interaction
+    controls.dampingFactor = 0.05;
+  }
+
+  private setup_lighting(){
+    const light = new THREE.HemisphereLight(0xd6e6ff, 0xa38c08, 1);
+    this.scene.add(light);
+  }
+
+  private setup_renderer(): void {
     this.renderer = new WebGLRenderer({
       canvas: this.canvas_ref()!.nativeElement,
       alpha: true
@@ -62,6 +71,7 @@ export class ThreeJsScaffoldComponent implements AfterViewInit {
 
     this.renderer!.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    // this.render()
     this.renderer.setAnimationLoop(this.render.bind(this));
   }
 

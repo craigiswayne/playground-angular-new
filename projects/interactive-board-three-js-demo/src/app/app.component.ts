@@ -9,6 +9,8 @@ import {
 } from 'three';
 import {ThreeJsScaffoldComponent} from '../../../library/components/three-js-scaffold/three-js-scaffold.component';
 import {MyThreeJsService} from '../../../library/services/my-three-js/my-three-js.service';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
 
 interface Tile {
   index: number,
@@ -61,6 +63,33 @@ export class AppComponent extends ThreeJsScaffoldComponent {
   protected override pre_setup() {
     this.determine_mine_positions();
     this.load_textures();
+    const loader = new GLTFLoader()
+    loader.load('crate.glb', (gltf) => {
+      this.scene.add(gltf.scene);
+
+      // Optional: Add animations if your model has them
+      // if (gltf.animations && gltf.animations.length > 0) {
+      //   const mixer = new THREE.AnimationMixer(gltf.scene);
+      //   gltf.animations.forEach((clip) => {
+      //     mixer.clipAction(clip).play();
+      //   });
+      //
+      //   // Add mixer to your animation loop
+      //   function animate() {
+      //     requestAnimationFrame(animate);
+      //     mixer.update(0.01); // Update the animation mixer
+      //     renderer.render(scene, camera);
+      //   }
+      //   animate();
+      // } else {
+      //   // If no animations, just render the scene.
+      //   function animate() {
+      //     requestAnimationFrame(animate);
+      //     this.renderer.render(scene, camera);
+      //   }
+      //   animate();
+      // }
+    })
     this.create3x3Board();
   }
 
