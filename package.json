@@ -5,7 +5,6 @@
     "ng": "ng",
     "start": "ng serve",
     "start:static": "npx serve",
-
     "build": "ng build",
     "build:dialog-demo": "ng build --project dialog-demo",
     "build:spacebar-listener": "ng build --project spacebar-listener",
@@ -17,7 +16,6 @@
     "build:smoke-effect-vanilla-js-demo": "ng build --project smoke-effect-vanilla-js-demo",
     "build:internationalization-demo": "ng build --project internationalization-demo --localize",
     "build:rotating-cube-three-js-demo": "ng build --project rotating-cube-three-js-demo",
-
     "start:dialog-demo": "ng serve --project dialog-demo",
     "start:interactive-board-three-js-demo": "ng serve --project interactive-board-three-js-demo --port 4301",
     "start:internationalization-demo": "ng serve --project internationalization-demo",
@@ -27,11 +25,11 @@
     "start:smoke-effect-vanilla-js-demo": "ng serve --project smoke-effect-vanilla-js-demo",
     "start:spacebar-listener": "ng serve --project spacebar-listener",
     "start:spine-player-demo": "ng serve --project spine-player-demo",
+    "start:spine-threejs-demo": "ng serve --project spine-threejs-demo",
     "start:sprite-sheet-player-demo": "ng serve --project sprite-sheet-player-demo",
     "start:three-js-underwater-bubbles-demo": "ng serve --project three-js-underwater-bubbles-demo",
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "start:waterfall-effect-three-js-demo": "ng serve --project waterfall-effect-three-js-demo --port 4210",
-
     "extract:languages": "ng extract-i18n --output-path src/locale --project internationalization-demo",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -47,10 +45,11 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@esotericsoftware/spine-player": "^4.2.75",
+    "@esotericsoftware/spine-threejs": "^4.2.75",
     "@types/three": "^0.173.0",
     "lil-gui": "^0.20.0",
     "rxjs": "~7.8.0",
-    "three": "^0.173.0",
+    "three": "^0.162.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },

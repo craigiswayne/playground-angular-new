@@ -2,9 +2,8 @@
 
 ## New Demos
 ```shell
-app_name="spine"
+app_name="spine-threejs"
 ng generate application "$app_name-demo" \
-  --minimal true \
   --routing false \
   --server-routing false \
   --skip-tests true \
