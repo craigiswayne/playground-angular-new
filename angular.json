@@ -1390,13 +1390,12 @@
         }
       }
     },
-    "spine-demo": {
+    "spine-player-demo": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "inlineTemplate": true,
           "inlineStyle": true,
-          "style": "scss",
           "skipTests": true
         },
         "@schematics/angular:class": {
@@ -1421,29 +1420,28 @@
           "skipTests": true
         }
       },
-      "root": "projects/spine-demo",
-      "sourceRoot": "projects/spine-demo/src",
+      "root": "projects/spine-player-demo",
+      "sourceRoot": "projects/spine-player-demo/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/spine-demo",
-            "index": "projects/spine-demo/src/index.html",
-            "browser": "projects/spine-demo/src/main.ts",
+            "outputPath": "dist/spine-player-demo",
+            "index": "projects/spine-player-demo/src/index.html",
+            "browser": "projects/spine-player-demo/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/spine-demo/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
+            "tsConfig": "projects/spine-player-demo/tsconfig.app.json",
             "assets": [
               {
                 "glob": "**/*",
-                "input": "projects/spine-demo/public"
+                "input": "projects/spine-player-demo/public"
               }
             ],
             "styles": [
-              "projects/spine-demo/src/styles.scss"
+              "projects/spine-player-demo/src/styles.scss"
             ],
             "scripts": []
           },
@@ -1475,10 +1473,106 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "spine-demo:build:production"
+              "buildTarget": "spine-player-demo:build:production"
             },
             "development": {
-              "buildTarget": "spine-demo:build:development"
+              "buildTarget": "spine-player-demo:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n"
+        }
+      }
+    },
+    "three-js-underwater-bubbles-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "inlineTemplate": true,
+          "inlineStyle": true,
+          "skipTests": true
+        },
+        "@schematics/angular:class": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "skipTests": true
+        },
+        "@schematics/angular:interceptor": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        },
+        "@schematics/angular:resolver": {
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        }
+      },
+      "root": "projects/three-js-underwater-bubbles-demo",
+      "sourceRoot": "projects/three-js-underwater-bubbles-demo/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/three-js-underwater-bubbles-demo",
+            "index": "projects/three-js-underwater-bubbles-demo/src/index.html",
+            "browser": "projects/three-js-underwater-bubbles-demo/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/three-js-underwater-bubbles-demo/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/three-js-underwater-bubbles-demo/public"
+              }
+            ],
+            "styles": [
+              "projects/three-js-underwater-bubbles-demo/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "three-js-underwater-bubbles-demo:build:production"
+            },
+            "development": {
+              "buildTarget": "three-js-underwater-bubbles-demo:build:development"
             }
           },
           "defaultConfiguration": "development"

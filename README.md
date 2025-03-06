@@ -3,7 +3,13 @@
 ## New Demos
 ```shell
 app_name="spine"
-ng generate application "$app_name-demo" --interactive --minimal true --routing false --server-routing false --skip-tests true --ssr false
+ng generate application "$app_name-demo" \
+  --minimal true \
+  --routing false \
+  --server-routing false \
+  --skip-tests true \
+  --ssr false \
+  --style scss
 ```
 
 ---

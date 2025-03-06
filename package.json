@@ -26,8 +26,9 @@
     "start:smoke-effect-three-js-demo": "ng serve --project smoke-effect-three-js-demo --port 4210",
     "start:smoke-effect-vanilla-js-demo": "ng serve --project smoke-effect-vanilla-js-demo",
     "start:spacebar-listener": "ng serve --project spacebar-listener",
-    "start:spine-demo": "ng serve --project spine-demo",
+    "start:spine-player-demo": "ng serve --project spine-player-demo",
     "start:sprite-sheet-player-demo": "ng serve --project sprite-sheet-player-demo",
+    "start:three-js-underwater-bubbles-demo": "ng serve --project three-js-underwater-bubbles-demo",
     "start:touch-events-demo": "ng serve --project touch-events-demo",
     "start:waterfall-effect-three-js-demo": "ng serve --project waterfall-effect-three-js-demo --port 4210",
 
