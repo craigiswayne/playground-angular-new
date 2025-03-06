@@ -1,0 +1,24 @@
+<form [formGroup]="form">
+  <div>
+    <label>File</label>
+    <input type="file" formControlName="file" accept="image/*" (change)="onFileChange($event)"/>
+  </div>
+</form>
+<section id="source_preview_container" #source_preview_container>
+  <div id="image_wrapper">
+    <div id="frame_visualizer_container">
+      @for(i of frames(); track i){
+        <div class="frame">{{i}}</div>
+      }
+    </div>
+    @if(temp_image_element.src){
+      <img [src]="temp_image_element.src"  alt="preview"/>
+    }
+  </div>
+</section>
+<hr />
+
+<section id="player_preview_container">
+  <h1>Preview</h1>
+  <canvas #canvas></canvas>
+</section>
