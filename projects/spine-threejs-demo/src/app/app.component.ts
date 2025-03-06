@@ -1,6 +1,14 @@
 import {AfterViewInit, Component, ElementRef, inject, viewChild} from '@angular/core';
 import {ThreeJsService} from '../../../library/services/three-js/three-js.service';
-import {AssetManager, AtlasAttachmentLoader, SkeletonJson, SkeletonMesh} from '@esotericsoftware/spine-threejs';
+import {
+  AssetManager,
+  AtlasAttachmentLoader,
+  BinaryInput,
+  Skeleton,
+  SkeletonBinary,
+  SkeletonJson,
+  SkeletonMesh
+} from '@esotericsoftware/spine-threejs';
 import {BoxGeometry, Mesh, MeshBasicMaterial} from 'three';
 import GUI from 'lil-gui';
 
@@ -93,7 +101,7 @@ export class AppComponent implements AfterViewInit {
     this.threeJSService.setAnimationLoop(this.render.bind(this));
   }
 
-  private injectModel(){
+  private async injectModel(){
     this.mesh?.clear();
     // Load the texture atlas using name.atlas and name.png from the AssetManager.
     // The function passed to TextureAtlas is used to resolve relative paths.
@@ -103,22 +111,54 @@ export class AppComponent implements AfterViewInit {
     // Create a AtlasAttachmentLoader that resolves region, mesh, bounding box and path attachments
     const atlasLoader = new AtlasAttachmentLoader(atlas);
 
-    // Create a SkeletonJson instance for parsing the .json file.
-    const skeletonJSON = new SkeletonJson(atlasLoader);
-
-    // Set the scale to apply during parsing, parse the file, and create a new skeleton.
-    skeletonJSON.scale = this.guiOptions.scale;
     // @ts-ignore
-    const skeletonData = skeletonJSON.readSkeletonData(this.assetManager.get(`${this.guiOptions.model}/${this.spineDefinitions[this.guiOptions.model].skeleton}`));
-    console.log('skeletonData', skeletonData, '')
-    // Create a SkeletonMesh from the data and attach it to the scene
-    this.skeletonMesh = new SkeletonMesh({
-      skeletonData: skeletonData,
-    })
-    this.skeletonMesh.position.y = -(10/4);
+    const skeletonFilePath = `${this.guiOptions.model}/${this.spineDefinitions[this.guiOptions.model].skeleton}`
 
-    this.skeletonMesh.state.setAnimation(0, skeletonData.animations[skeletonData.animations.length-1].name, true);
-    this.mesh!.add(this.skeletonMesh);
+    if(skeletonFilePath.endsWith('.json')){
+      // Create a SkeletonJson instance for parsing the .json file.
+      const skeletonLoader = new SkeletonJson(atlasLoader);
+      skeletonLoader.scale = this.guiOptions.scale;
+      const skeletonAsset = this.assetManager.get(skeletonFilePath);
+      const skeletonData = skeletonLoader.readSkeletonData(skeletonAsset);
+      // Set the scale to apply during parsing, parse the file, and create a new skeleton.
+      // Create a SkeletonMesh from the data and attach it to the scene
+      this.skeletonMesh = new SkeletonMesh({
+        skeletonData: skeletonData,
+      })
+      this.skeletonMesh.position.y = -(10/4);
+
+      this.skeletonMesh.state.setAnimation(0, skeletonData.animations[skeletonData.animations.length-1].name, true);
+      this.mesh!.add(this.skeletonMesh);
+      console.log('skeletonData', skeletonData, '')
+
+    } else {
+      debugger;
+      const skelResponse = await fetch(skeletonFilePath);
+      const skelArrayBuffer = await skelResponse.arrayBuffer();
+      const skelData = new Uint8Array(skelArrayBuffer);
+      const binaryInput = new BinaryInput(skelData);
+
+
+
+      // Create a SkeletonJson instance for parsing the .json file.
+      const skeletonLoader = new SkeletonBinary(atlasLoader);
+      skeletonLoader.scale = 1;
+      const skeletonAsset = this.assetManager.get(skeletonFilePath);
+      const skeletonData = skeletonLoader.readSkeletonData(skelArrayBuffer);
+      const skeleton = new Skeleton(skeletonData);
+
+      // skeletonLoader.scale = this.guiOptions.scale;
+      // Set the scale to apply during parsing, parse the file, and create a new skeleton.
+      // Create a SkeletonMesh from the data and attach it to the scene
+      this.skeletonMesh = new SkeletonMesh({
+        skeletonData: skeletonData,
+      })
+      this.skeletonMesh.position.y = -(10/4);
+
+      // this.skeletonMesh.state.setAnimation(0, skeletonData.animations[skeletonData.animations.length-1].name, true);
+      this.mesh!.add(this.skeletonMesh);
+      console.log('skeletonData', skeletonData, '')
+    }
   }
 
   private render(change: number) {
