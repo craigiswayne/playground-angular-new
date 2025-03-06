@@ -16,20 +16,21 @@ export class AppComponent implements AfterViewInit {
 
   private spineDefinitions = {
     'raptor': {
-      skeleton: 'raptor-pro.json',
+      skeleton: 'raptor.json',
       atlas: 'raptor.atlas',
     },
     'coin': {
-      skeleton: 'coin-pro.json',
+      skeleton: 'coin.json',
       atlas: 'coin.atlas',
     },
     'spineboy': {
-      skeleton: 'spineboy-pro.json',
+      skeleton: 'spineboy.json',
       atlas: 'spineboy.atlas',
     },
-    // 'teefz': {
-    //
-    // }
+    'teefz': {
+      skeleton: 'teefz.skel',
+      atlas: 'teefz.atlas',
+    }
   }
 
   private guiOptions = {
@@ -96,7 +97,8 @@ export class AppComponent implements AfterViewInit {
     this.mesh?.clear();
     // Load the texture atlas using name.atlas and name.png from the AssetManager.
     // The function passed to TextureAtlas is used to resolve relative paths.
-    const atlas = this.assetManager.get(`${this.guiOptions.model}/${this.guiOptions.model}.atlas`);
+    // @ts-ignore
+    const atlas = this.assetManager.get(`${this.guiOptions.model}/${this.spineDefinitions[this.guiOptions.model].atlas}`);
 
     // Create a AtlasAttachmentLoader that resolves region, mesh, bounding box and path attachments
     const atlasLoader = new AtlasAttachmentLoader(atlas);
@@ -106,7 +108,8 @@ export class AppComponent implements AfterViewInit {
 
     // Set the scale to apply during parsing, parse the file, and create a new skeleton.
     skeletonJSON.scale = this.guiOptions.scale;
-    const skeletonData = skeletonJSON.readSkeletonData(this.assetManager.get(`${this.guiOptions.model}/${this.guiOptions.model}-pro.json`));
+    // @ts-ignore
+    const skeletonData = skeletonJSON.readSkeletonData(this.assetManager.get(`${this.guiOptions.model}/${this.spineDefinitions[this.guiOptions.model].skeleton}`));
     console.log('skeletonData', skeletonData, '')
     // Create a SkeletonMesh from the data and attach it to the scene
     this.skeletonMesh = new SkeletonMesh({
@@ -123,7 +126,6 @@ export class AppComponent implements AfterViewInit {
     const delta = now - this.lastFrameTime;
     this.skeletonMesh?.position.set(this.guiOptions.modelX, this.guiOptions.modelY, this.guiOptions.modelZ);
     this.lastFrameTime = now;
-
     this.skeletonMesh!.update(delta);
     this.threeJSService.render()
   }
