@@ -1,0 +1,141 @@
+@import url(https://fonts.googleapis.com/css?family=Share+Tech+Mono);
+
+:host {
+  height: 100%;
+  width: 100vw;
+}
+
+figure  {
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+svg.effect {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+}
+
+
+svg text {
+  filter: url(#filter);
+  fill: white;
+  font-family: "Share Tech Mono", sans-serif;
+  font-size: 8rem;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+.top-r,
+.bot-r,
+.top-g,
+.bot-g {
+  stroke: #ffffff;
+}
+
+.top-r {
+  stroke-width: 100px;
+  -webkit-animation: top_animation 3.5s linear infinite;
+  animation: top_animation 3.5s linear infinite;
+}
+
+.bot-r {
+  stroke-width: 100px;
+  -webkit-animation: bottom_animation 4s linear infinite;
+  animation: bottom_animation 4s linear infinite;
+}
+
+.top-g {
+  stroke-width: 50px;
+  animation: top_animation 4s linear reverse infinite;
+}
+
+.bot-g {
+  stroke-width: 50%;
+  animation: bottom_animation 3.5s linear reverse infinite;
+}
+
+@keyframes top_animation {
+  5% {
+    stroke-width: 124px;
+  }
+  10% {
+    stroke-width: 123px;
+  }
+  17% {
+    stroke-width: 57px;
+  }
+  27% {
+    stroke-width: 112px;
+  }
+  37% {
+    stroke-width: 57px;
+  }
+  45% {
+    stroke-width: 130px;
+  }
+  53% {
+    stroke-width: 48px;
+  }
+  60% {
+    stroke-width: 166px;
+  }
+  71% {
+    stroke-width: 191px;
+  }
+  78% {
+    stroke-width: 132px;
+  }
+  87% {
+    stroke-width: 140px;
+  }
+  92% {
+    stroke-width: 127px;
+  }
+}
+@keyframes bottom_animation {
+  2% {
+    stroke-width: 84px;
+  }
+  12% {
+    stroke-width: 133px;
+  }
+  23% {
+    stroke-width: 150px;
+  }
+  28% {
+    stroke-width: 50px;
+  }
+  33% {
+    stroke-width: 89px;
+  }
+  45% {
+    stroke-width: 122px;
+  }
+  49% {
+    stroke-width: 97px;
+  }
+  60% {
+    stroke-width: 109px;
+  }
+  69% {
+    stroke-width: 95px;
+  }
+  72% {
+    stroke-width: 88px;
+  }
+  81% {
+    stroke-width: 199px;
+  }
+  89% {
+    stroke-width: 108px;
+  }
+}

@@ -21,6 +21,7 @@
     "start:internationalization-demo": "ng serve --project internationalization-demo",
     "start:minesweeper-game-demo": "ng serve --project minesweeper-game-demo --port 4302",
     "start:rotating-cube-three-js-demo": "ng serve --project rotating-cube-three-js-demo --port 4211",
+    "start:route-transitions-demo": "ng serve --project route-transitions-demo --port 4212",
     "start:smoke-effect-three-js-demo": "ng serve --project smoke-effect-three-js-demo --port 4210",
     "start:smoke-effect-vanilla-js-demo": "ng serve --project smoke-effect-vanilla-js-demo",
     "start:spacebar-listener": "ng serve --project spacebar-listener",

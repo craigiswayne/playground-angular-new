@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="spine-threejs"
+app_name="route-transitions"
 ng generate application "$app_name-demo" \
   --routing false \
   --server-routing false \
