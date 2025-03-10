@@ -25,11 +25,11 @@ export class AppComponent implements AfterViewInit {
   private spineDefinitions = {
     'raptor': {
       skeleton: 'raptor.json',
-      atlas: 'raptor.atlas',
+      atlas: 'spine.atlas',
     },
     'coin': {
-      skeleton: 'coin.json',
-      atlas: 'coin.atlas',
+      skeleton: 'spine.json',
+      atlas: 'spine.atlas',
     },
     'spineboy': {
       skeleton: 'spineboy.json',
