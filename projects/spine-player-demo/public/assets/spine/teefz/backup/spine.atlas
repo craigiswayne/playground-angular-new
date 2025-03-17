@@ -1,0 +1,28 @@
+body-parts.png
+size:1972,779
+filter:Linear,Linear
+pma:true
+Bottom Teeth
+bounds:1486,143,634,484
+rotate:90
+Left Eye
+bounds:2,676,101,107
+rotate:90
+Left Lid
+bounds:111,596,218,181
+Mouth
+bounds:2,2,760,564
+Right Eye
+bounds:331,596,191,181
+Right Lid
+bounds:524,568,267,209
+Top Teeth
+bounds:793,387,691,390
+
+body.png
+size:1846,1489
+filter:Linear,Linear
+pma:true
+Body
+bounds:2,2,1842,1485
+offsets:0,15,1843,1500

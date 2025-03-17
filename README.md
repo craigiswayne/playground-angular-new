@@ -2,9 +2,8 @@
 
 ## New Demos
 ```shell
-app_name="three-js-underwater-bubbles"
+app_name="route-transitions"
 ng generate application "$app_name-demo" \
-  --minimal true \
   --routing false \
   --server-routing false \
   --skip-tests true \
