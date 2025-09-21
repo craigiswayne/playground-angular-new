@@ -2,7 +2,7 @@
 
 ## New Demos
 ```shell
-app_name="route-transitions"
+app_name="route-navigation-options"
 ng generate application "$app_name-demo" \
   --routing false \
   --server-routing false \
